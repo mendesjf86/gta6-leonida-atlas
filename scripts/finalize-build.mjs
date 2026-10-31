@@ -48,7 +48,7 @@ const validMeasurementId =
     : "";
 await writeFile(
   join(outDir, "analytics.html"),
-  `<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="referrer" content="no-referrer"><title>Atlas anonymous measurement</title><script defer src="${base}analytics-bootstrap.js"></script></head><body></body></html>`,
+  `<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="referrer" content="no-referrer"><title>Medição anônima do mapa</title><script defer src="${base}analytics-bootstrap.js"></script></head><body></body></html>`,
 );
 await writeFile(
   join(outDir, "analytics-bootstrap.js"),
@@ -76,7 +76,7 @@ await writeFile(
     gtag('js',new Date());
     var safeLocation=parentOrigin+base;
     gtag('config',id,{send_page_view:false,cookie_domain:'none',cookie_path:base,cookie_prefix:'atlas',cookie_flags:'SameSite=Lax;Secure',page_location:safeLocation,page_referrer:'',allow_google_signals:false,allow_ad_personalization_signals:false});
-    gtag('event','page_view',{page_title:'Leonida Atlas',page_location:safeLocation,page_referrer:''});
+    gtag('event','page_view',{page_title:'Mapa de Leonida · Mundo Vice',page_location:safeLocation,page_referrer:''});
     var script=document.createElement('script');script.async=true;script.src='https://www.googletagmanager.com/gtag/js?id='+id;document.head.appendChild(script);
   });
   send('atlas:analytics:ready');
@@ -164,10 +164,10 @@ try {
       metadata: {
         ...utility.metadata,
         canonical: null,
-        title: "Atlas page not found",
-        description: "This Atlas address does not identify an available page.",
+        title: "Página não encontrada | Mapa de Leonida · Mundo Vice",
+        description: "Este endereço não corresponde a nenhuma página disponível do Mapa de Leonida, o mapa da comunidade de GTA 6 do Mundo Vice.",
       },
-      markup: `<main class="project-page"><div class="project-layout"><article class="project-article"><h1>Atlas page not found</h1><p><a href="${base}">Return to the Leonida Atlas</a></p></article></div></main>`,
+      markup: `<main class="project-page"><div class="project-layout"><article class="project-article"><h1>Página não encontrada</h1><p><a href="${base}">Voltar ao Mapa de Leonida</a></p></article></div></main>`,
     }).replace(/<script type="module"[^>]*><\/script>/g, ""),
   );
 } finally {

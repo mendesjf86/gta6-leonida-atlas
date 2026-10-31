@@ -246,7 +246,7 @@ describe('Street Leonida free-point map navigation', () => {
       {
         x: -7000,
         z: -3008,
-        label: 'Selected map point',
+        label: 'Ponto selecionado no mapa',
         id: 'map-point:-7000:-3008',
         source: 'map',
       },

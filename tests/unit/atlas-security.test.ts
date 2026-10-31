@@ -364,7 +364,7 @@ describe('optional analytics separate-origin isolation', () => {
       [
         'event',
         'page_view',
-        { page_title: 'Leonida Atlas', page_location: `${origin}/atlas/`, page_referrer: '' },
+        { page_title: 'Mapa de Leonida · Mundo Vice', page_location: `${origin}/atlas/`, page_referrer: '' },
       ],
     ]);
     expect(JSON.stringify(bootstrap.commands())).not.toContain('never-send');

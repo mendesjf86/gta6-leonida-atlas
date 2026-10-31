@@ -573,6 +573,6 @@ describe("Street Leonida evidence-led arrival fidelity", () => {
     expect(signCopy.join(" ")).not.toMatch(
       /WIFI|POOL|OPEN LATE|NIGHT CABARET/i,
     );
-    expect(signCopy.join(" ")).toMatch(/APPROXIMATE|UNCONFIRMED/i);
+    expect(signCopy.join(" ")).toMatch(/APROXIMADO|NÃO CONFIRMADO/i);
   });
 });

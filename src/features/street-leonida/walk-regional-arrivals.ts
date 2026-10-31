@@ -277,7 +277,7 @@ function createSignMaterial(
       context.fillStyle = cssColor(accent);
       context.font = '600 34px Inter, Arial, sans-serif';
       context.letterSpacing = '3px';
-      context.fillText(subtitle, 108, 230);
+      context.fillText(subtitle, 108, 230, 880);
       texture = new THREE.CanvasTexture(canvas);
     }
   }
@@ -2212,8 +2212,8 @@ function addGrassriversArrival(
     geometry.plane,
     createSignMaterial(
       'street-leonida/sign/approximate-water-tower',
-      'APPROXIMATE',
-      'UNNAMED WATER TOWER',
+      'APROXIMADO',
+      'CAIXA-D’ÁGUA SEM NOME',
       0x7c725a,
       0xe6ddc0,
     ),
@@ -2605,7 +2605,7 @@ function addPortGellhornArrival(
     createSignMaterial(
       'street-leonida/sign/starlet-motel',
       'STARLET MOTEL',
-      'GTADB NAME  •  APPROXIMATE',
+      'NOME GTADB  •  APROXIMADO',
       0x15252a,
       0xffb24d,
     ),
@@ -2736,7 +2736,7 @@ function addPortGellhornArrival(
     createSignMaterial(
       'street-leonida/sign/delights-cabaret',
       'DELIGHTS',
-      'UNCONFIRMED  •  APPROXIMATE',
+      'NÃO CONFIRMADO  •  APROXIMADO',
       0x321827,
       0xff4c8f,
     ),
@@ -3562,7 +3562,7 @@ function addMountKalagaArrival(
     createSignMaterial(
       'street-leonida/sign/mount-kalaga',
       'MOUNT KALAGA',
-      'COMMUNITY RECONSTRUCTION  •  APPROXIMATE',
+      'RECONSTRUÇÃO DA COMUNIDADE  •  APROXIMADO',
       0x193c2d,
       0xd5aa4a,
     ),

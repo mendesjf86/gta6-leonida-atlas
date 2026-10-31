@@ -460,17 +460,17 @@ export function getWalkSceneProvenance(scene: WalkSceneProvenanceInput): WalkSce
     publisher === 'Rockstar Games' && scene.labels.includes('Official media');
   if (isRockstarOfficial) {
     return {
-      evidenceLabel: 'OFFICIAL VISUAL EVIDENCE',
-      kicker: 'Rockstar evidence',
-      sourceLinkLabel: 'Open Rockstar Games',
-      descriptionFallback: 'A documented scene from official Grand Theft Auto VI media.',
+      evidenceLabel: 'EVIDÊNCIA VISUAL OFICIAL',
+      kicker: 'Evidência da Rockstar',
+      sourceLinkLabel: 'Abrir Rockstar Games',
+      descriptionFallback: 'Uma cena documentada em mídia oficial de Grand Theft Auto VI.',
     };
   }
   return {
-    evidenceLabel: 'DOCUMENTED SOURCE EVIDENCE',
-    kicker: publisher ? `${publisher} evidence` : 'Cited-source evidence',
-    sourceLinkLabel: publisher ? `Open ${publisher}` : 'Open cited source',
-    descriptionFallback: 'A documented scene from the cited source.',
+    evidenceLabel: 'EVIDÊNCIA DE FONTE DOCUMENTADA',
+    kicker: publisher ? `Evidência: ${publisher}` : 'Evidência de fonte citada',
+    sourceLinkLabel: publisher ? `Abrir ${publisher}` : 'Abrir fonte citada',
+    descriptionFallback: 'Uma cena documentada na fonte citada.',
   };
 }
 
@@ -1109,7 +1109,7 @@ function createHotspotLabel(sceneData: WalkScene, index: number): THREE.Sprite {
     context.fillStyle = '#49ddf4';
     context.font = '700 28px sans-serif';
     context.fillText(
-      `DISCOVERY ${String(index + 1).padStart(2, '0')} · ${sceneData.placeName.toUpperCase()}`,
+      `DESCOBERTA ${String(index + 1).padStart(2, '0')} · ${sceneData.placeName.toUpperCase()}`,
       48,
       70,
     );
@@ -1119,7 +1119,7 @@ function createHotspotLabel(sceneData: WalkScene, index: number): THREE.Sprite {
     lines.forEach((line, lineIndex) => context.fillText(line, 48, 138 + lineIndex * 53));
     context.fillStyle = '#cbd5e1';
     context.font = '500 24px sans-serif';
-    context.fillText('Approximate regional placement · press E to explore', 48, 260);
+    context.fillText('Posição regional aproximada · aperte E para explorar', 48, 260, 680);
   });
   const material = new THREE.SpriteMaterial({
     map: texture,
@@ -1209,7 +1209,7 @@ function zoneProfile(position: WalkPoint): { name: string; detail: string } {
 function cardinalHeading(yaw: number): string {
   const normalized = ((-yaw % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
   const index = Math.round(normalized / (Math.PI / 4)) % 8;
-  return ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][index] ?? 'N';
+  return ['N', 'NE', 'L', 'SE', 'S', 'SO', 'O', 'NO'][index] ?? 'N';
 }
 
 function updateDialog(dom: WalkDom, hotspot: WorldHotspot): void {
@@ -1625,9 +1625,9 @@ export function initializeWalkableWorld(
     dom.fullscreenButton?.setAttribute('aria-pressed', String(next));
     dom.fullscreenButton?.setAttribute(
       'aria-label',
-      next ? 'Close full screen' : 'Open full screen',
+      next ? 'Sair da tela cheia' : 'Abrir em tela cheia',
     );
-    if (dom.fullscreenLabel) dom.fullscreenLabel.textContent = next ? 'Close' : 'Full screen';
+    if (dom.fullscreenLabel) dom.fullscreenLabel.textContent = next ? 'Fechar' : 'Tela cheia';
     if (scheduleResize) requestAnimationFrame(resize);
   }
 
@@ -1689,8 +1689,8 @@ export function initializeWalkableWorld(
     if (arrivalNotice) {
       const adjusted = root.dataset.walkMapTravelAdjustment !== 'NONE';
       arrivalNotice.textContent = adjusted
-        ? `Arrival adjusted to nearby clear ground · APPROXIMATE. Selected ${detail.label}; your position marker shows the actual arrival.`
-        : `Arrived at ${detail.label} · APPROXIMATE community placement.`;
+        ? `Chegada ajustada para um terreno livre próximo · APROXIMADO. Destino escolhido: ${detail.label}; o marcador de posição mostra onde você realmente chegou.`
+        : `Você chegou a ${detail.label} · posicionamento APROXIMADO da comunidade.`;
       arrivalNotice.removeAttribute('hidden');
     }
     syncPlayerData();
@@ -2069,7 +2069,7 @@ export function initializeWalkableWorld(
           const arrivalNotice = root.querySelector<HTMLElement>('[data-atlas-arrival-notice]');
           if (arrivalNotice) {
             arrivalNotice.textContent =
-              'Position adjusted to nearby clear ground as regional details loaded · APPROXIMATE. Your map marker shows the updated position.';
+              'Posição ajustada para um terreno livre próximo enquanto os detalhes da região carregavam · APROXIMADO. O marcador no mapa mostra a posição atualizada.';
             arrivalNotice.removeAttribute('hidden');
           }
         }
@@ -2096,7 +2096,7 @@ export function initializeWalkableWorld(
         if (dom.promptTitle) dom.promptTitle.textContent = nearest?.scene.title ?? '';
         if (dom.interact) {
           dom.interact.disabled = !nearest;
-          dom.interact.textContent = nearest ? 'Explore' : 'Walk closer';
+          dom.interact.textContent = nearest ? 'Explorar' : 'Chegue mais perto';
         }
       }
 

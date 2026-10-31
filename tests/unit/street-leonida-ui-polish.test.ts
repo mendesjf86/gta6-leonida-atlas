@@ -42,8 +42,8 @@ describe('Leonida explorer accessibility and viewport', () => {
 
   it('discloses generated visual studies as reconstruction assets in the rendered evidence panel', () => {
     const markup = renderToStaticMarkup(createElement(ExplorerView, { onClose: () => undefined }));
-    expect(markup).toMatch(/generated material or vegetation studies are reconstruction assets/i);
-    expect(markup).toContain('not extracted GTA VI game assets');
+    expect(markup).toMatch(/estudos gerados de materiais e vegetação são recursos da reconstrução/i);
+    expect(markup).toContain('não arquivos extraídos do jogo GTA VI');
     expect(markup).toContain('aria-labelledby="explorer-evidence-title"');
   });
 });

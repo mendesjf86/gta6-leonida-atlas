@@ -45,10 +45,10 @@ describe('Street Leonida world truth boundaries', () => {
         source: { publisher: 'Rockstar Games' },
       }),
     ).toEqual({
-      evidenceLabel: 'OFFICIAL VISUAL EVIDENCE',
-      kicker: 'Rockstar evidence',
-      sourceLinkLabel: 'Open Rockstar Games',
-      descriptionFallback: 'A documented scene from official Grand Theft Auto VI media.',
+      evidenceLabel: 'EVIDÊNCIA VISUAL OFICIAL',
+      kicker: 'Evidência da Rockstar',
+      sourceLinkLabel: 'Abrir Rockstar Games',
+      descriptionFallback: 'Uma cena documentada em mídia oficial de Grand Theft Auto VI.',
     });
 
     expect(
@@ -57,10 +57,10 @@ describe('Street Leonida world truth boundaries', () => {
         source: { publisher: null },
       }),
     ).toEqual({
-      evidenceLabel: 'DOCUMENTED SOURCE EVIDENCE',
-      kicker: 'Cited-source evidence',
-      sourceLinkLabel: 'Open cited source',
-      descriptionFallback: 'A documented scene from the cited source.',
+      evidenceLabel: 'EVIDÊNCIA DE FONTE DOCUMENTADA',
+      kicker: 'Evidência de fonte citada',
+      sourceLinkLabel: 'Abrir fonte citada',
+      descriptionFallback: 'Uma cena documentada na fonte citada.',
     });
   });
 });

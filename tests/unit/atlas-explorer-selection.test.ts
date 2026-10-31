@@ -108,6 +108,6 @@ describe('selected map place enters the optional explorer', () => {
     const place = catalogue.find((place) => !place.position)!;
     const attributes = initialAttributes(place);
     expect(attributes.destination).toBeUndefined();
-    expect(attributes.html).toContain('has no mapped position');
+    expect(attributes.html).toContain('não tem posição no mapa');
   });
 });

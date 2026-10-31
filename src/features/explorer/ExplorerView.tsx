@@ -31,10 +31,24 @@ const scenes = getLocalStreetViewpoints().items.map((viewpoint) => ({
   labels: viewpoint.labels,
 }));
 
+const MOVE_DIRECTION_LABELS = {
+  forward: 'para frente',
+  left: 'para a esquerda',
+  backward: 'para trás',
+  right: 'para a direita',
+} as const;
+
+const LOOK_DIRECTION_LABELS = {
+  up: 'para cima',
+  left: 'para a esquerda',
+  down: 'para baixo',
+  right: 'para a direita',
+} as const;
+
 function Attribution() {
   return (
     <p className="explorer-attribution">
-      <strong>APPROXIMATE</strong> · Community reconstruction ·{' '}
+      <strong>APROXIMADO</strong> · Reconstrução da comunidade ·{' '}
       <a href={GTADB_PREFERRED_SOURCE} target="_blank" rel="noreferrer">
         GTADB / Map GTA
       </a>{' '}
@@ -79,7 +93,7 @@ export default function ExplorerView({
       className="explorer-view"
       data-street-shell=""
       data-atlas-standalone="true"
-      aria-label="Optional 3D explorer"
+      aria-label="Explorador 3D opcional"
     >
       <section
         ref={worldRef}
@@ -100,45 +114,48 @@ export default function ExplorerView({
         <canvas
           data-walk-canvas=""
           tabIndex={-1}
-          aria-label="Three-dimensional community reconstruction of Leonida"
+          aria-label="Reconstrução 3D de Leonida feita pela comunidade"
         />
         <header className="explorer-toolbar">
           <div>
-            <span className="explorer-kicker">COMMUNITY RECONSTRUCTION</span>
-            <h1>Explore Leonida</h1>
+            <span className="explorer-kicker">RECONSTRUÇÃO DA COMUNIDADE</span>
+            <h1>Explorar Leonida</h1>
           </div>
-          <nav aria-label="Explorer tools">
+          <nav aria-label="Ferramentas do explorador">
             <button type="button" data-start-walking="">
-              Resume walking
+              Voltar a andar
             </button>
             <button type="button" data-open-walk-map="">
-              Travel map <kbd>M</kbd>
+              Mapa de viagem <kbd>M</kbd>
             </button>
             <button type="button" data-open-walk-evidence="">
-              Evidence
+              Evidências
             </button>
             <button type="button" onClick={onClose}>
-              Back to atlas
+              Voltar ao mapa
             </button>
           </nav>
         </header>
         <div className="explorer-loading" data-walk-loading="" role="status">
-          Building Leonida…
+          Construindo Leonida…
         </div>
         <div className="explorer-unavailable" data-walk-unsupported="" role="status" hidden>
-          <h2>3D view unavailable</h2>
-          <p>The renderer could not start. Your local atlas and saved work remain available.</p>
+          <h2>Visualização 3D indisponível</h2>
+          <p>
+            Não foi possível iniciar o renderizador. Seu mapa local e o que você salvou continuam
+            disponíveis.
+          </p>
           <button type="button" onClick={onClose}>
-            Return to the atlas
+            Voltar ao mapa
           </button>
           <button type="button" data-open-walk-evidence="">
-            Read source notes
+            Ler notas das fontes
           </button>
         </div>
         <div className="explorer-hud" data-walk-hud="">
           <strong data-walk-zone="">{entry.regionName}</strong>
-          <span data-walk-zone-detail="">Approximate community reconstruction</span>
-          <small data-walk-hud-coordinates="">GTADB frame</small>
+          <span data-walk-zone-detail="">Reconstrução aproximada da comunidade</span>
+          <small data-walk-hud-coordinates="">Coordenadas GTADB</small>
           <b data-walk-heading="">N</b>
         </div>
         <p
@@ -149,69 +166,69 @@ export default function ExplorerView({
           hidden={(!initialPlace && !requestedPlaceId) || Boolean(entry.destination)}
         >
           {initialPlace && !entry.destination
-            ? `${initialPlace.title} has no mapped position. The explorer starts in Vice City.`
+            ? `${initialPlace.title} não tem posição no mapa. O explorador começa em Vice City.`
             : requestedPlaceId && !initialPlace
-              ? 'The selected place is unavailable in this browser. The explorer starts in Vice City.'
+              ? 'O local selecionado não está disponível neste navegador. O explorador começa em Vice City.'
               : ''}
         </p>
-        <div className="explorer-zoom" aria-label="Camera zoom">
-          <button type="button" data-walk-zoom-in="" aria-label="Zoom camera in">
+        <div className="explorer-zoom" aria-label="Zoom da câmera">
+          <button type="button" data-walk-zoom-in="" aria-label="Aproximar câmera">
             +
           </button>
           <output data-walk-zoom-value="">100%</output>
-          <button type="button" data-walk-zoom-out="" aria-label="Zoom camera out">
+          <button type="button" data-walk-zoom-out="" aria-label="Afastar câmera">
             −
           </button>
         </div>
         <p className="explorer-controls-hint">
-          <kbd>WASD</kbd> move · <kbd>Shift</kbd> run · <kbd>E</kbd> explore
+          <kbd>WASD</kbd> andar · <kbd>Shift</kbd> correr · <kbd>E</kbd> explorar
         </p>
         <p className="explorer-lock-hint" data-walk-lock-hint="" hidden>
-          Click the scene to look around. Esc releases the pointer.
+          Clique na cena para olhar ao redor. Esc libera o cursor.
         </p>
         <button className="explorer-prompt" type="button" data-walk-prompt="" hidden>
-          <kbd>E</kbd> Explore <span data-walk-prompt-title="" />
+          <kbd>E</kbd> Explorar <span data-walk-prompt-title="" />
         </button>
         <div
           className="explorer-touch"
           data-walk-mobile-controls=""
           role="group"
-          aria-label="Touch movement controls"
+          aria-label="Controles de movimento por toque"
         >
-          <div data-walk-joystick="" role="group" aria-label="Analog movement">
+          <div data-walk-joystick="" role="group" aria-label="Movimento analógico">
             <span data-walk-joystick-knob="" aria-hidden="true" />
-            <small>MOVE</small>
+            <small>MOVER</small>
           </div>
-          <div data-walk-look-pad="" role="group" aria-label="Drag to look around">
-            <small>DRAG TO LOOK</small>
+          <div data-walk-look-pad="" role="group" aria-label="Arraste para olhar ao redor">
+            <small>ARRASTE PARA OLHAR</small>
           </div>
           <button type="button" data-walk-interact="" disabled>
-            Explore
+            Explorar
           </button>
         </div>
         <details className="explorer-buttons" data-walk-button-controls="">
-          <summary>Button controls</summary>
-          <div role="group" aria-label="Movement buttons">
+          <summary>Controles por botões</summary>
+          <div role="group" aria-label="Botões de movimento">
             {(['forward', 'left', 'backward', 'right'] as const).map((direction, i) => (
               <button
                 key={direction}
                 type="button"
                 data-walk-move-button={direction}
-                aria-label={`Move ${direction}`}
+                aria-label={`Mover ${MOVE_DIRECTION_LABELS[direction]}`}
               >
                 {['↑', '←', '↓', '→'][i]}
               </button>
             ))}
           </div>
-          <div role="group" aria-label="Look buttons">
+          <div role="group" aria-label="Botões para olhar">
             {(['up', 'left', 'down', 'right'] as const).map((direction) => (
               <button
                 key={direction}
                 type="button"
                 data-walk-look-button={direction}
-                aria-label={`Look ${direction}`}
+                aria-label={`Olhar ${LOOK_DIRECTION_LABELS[direction]}`}
               >
-                Look {direction}
+                Olhar {LOOK_DIRECTION_LABELS[direction]}
               </button>
             ))}
           </div>
@@ -228,8 +245,8 @@ export default function ExplorerView({
         >
           <header>
             <div>
-              <span className="explorer-kicker">3D TRAVEL</span>
-              <h2 id="explorer-map-title">Choose a destination</h2>
+              <span className="explorer-kicker">VIAGEM 3D</span>
+              <h2 id="explorer-map-title">Escolha um destino</h2>
             </div>
             <div className="explorer-map-header-actions">
               <button
@@ -239,10 +256,10 @@ export default function ExplorerView({
                 aria-expanded={destinationsOpen}
                 onClick={() => setDestinationsOpen(!destinationsOpen)}
               >
-                Destinations
+                Destinos
               </button>
               <button type="button" data-close-walk-map="">
-                Back to 3D
+                Voltar ao 3D
               </button>
             </div>
           </header>
@@ -252,36 +269,36 @@ export default function ExplorerView({
                 <svg
                   data-walk-map-svg=""
                   role="group"
-                  aria-label="Interactive community evidence map"
+                  aria-label="Mapa interativo de evidências da comunidade"
                 />
               </div>
-              <div className="explorer-map-tools" aria-label="Travel map controls">
-                <button type="button" data-walk-map-zoom-in="" aria-label="Zoom map in">
+              <div className="explorer-map-tools" aria-label="Controles do mapa de viagem">
+                <button type="button" data-walk-map-zoom-in="" aria-label="Aproximar mapa">
                   +
                 </button>
                 <output data-walk-map-zoom-value="">100%</output>
-                <button type="button" data-walk-map-zoom-out="" aria-label="Zoom map out">
+                <button type="button" data-walk-map-zoom-out="" aria-label="Afastar mapa">
                   −
                 </button>
                 <button type="button" data-walk-map-zoom-reset="">
-                  Fit
+                  Ajustar
                 </button>
                 <button type="button" data-walk-map-center-player="">
-                  My position
+                  Minha posição
                 </button>
               </div>
               <div className="explorer-map-pose">
                 <strong data-walk-map-live-region="">{entry.regionName}</strong>
                 <span data-walk-map-live-heading="">N</span>
-                <span data-walk-map-live-gtadb="">GTADB frame</span>
+                <span data-walk-map-live-gtadb="">Coordenadas GTADB</span>
                 <span data-walk-map-live-world="" />
-                <small data-walk-map-live-evidence="">APPROXIMATE</small>
+                <small data-walk-map-live-evidence="">APROXIMADO</small>
               </div>
             </div>
             <aside
               id="explorer-destinations"
               className="explorer-destinations"
-              aria-label="Travel destinations"
+              aria-label="Destinos de viagem"
             >
               <button
                 className="explorer-destinations-close"
@@ -293,56 +310,56 @@ export default function ExplorerView({
                     ?.focus();
                 }}
               >
-                Close destinations
+                Fechar destinos
               </button>
               <p data-walk-map-fallback-note="" role="status" hidden>
-                3D travel is unavailable; evidence browsing remains available.
+                A viagem em 3D não está disponível, mas você ainda pode navegar pelas evidências.
               </p>
               <label>
-                Search the catalogue
+                Buscar no catálogo
                 <input
                   type="search"
                   data-walk-map-search=""
-                  aria-label="Search GTADB places"
-                  placeholder="Place, tag or marker ID…"
+                  aria-label="Buscar locais do GTADB"
+                  placeholder="Local, tag ou ID do marcador…"
                   autoComplete="off"
                 />
               </label>
               <details open>
-                <summary>Six documented regions</summary>
+                <summary>Seis regiões documentadas</summary>
                 <div className="explorer-regions">
                   {regions.map((region) => (
                     <button key={region.slug} type="button" data-walk-region={region.slug}>
                       {region.name}
-                      <small>APPROXIMATE</small>
+                      <small>APROXIMADO</small>
                     </button>
                   ))}
                 </div>
               </details>
-              <div className="explorer-layer-toggles" aria-label="Evidence visibility">
+              <div className="explorer-layer-toggles" aria-label="Visibilidade das evidências">
                 <button type="button" data-walk-map-layer-toggle="supported" aria-pressed="true">
-                  <span data-walk-map-toggle-state="">Hide</span> named evidence
+                  <span data-walk-map-toggle-state="">Ocultar</span> evidências nomeadas
                 </button>
                 <button type="button" data-walk-map-layer-toggle="uncertain" aria-pressed="false">
-                  <span data-walk-map-toggle-state="">Show</span> uncertain entries
+                  <span data-walk-map-toggle-state="">Mostrar</span> entradas incertas
                 </button>
               </div>
               <output data-walk-map-search-summary="" aria-live="polite">
-                Loading local catalogue…
+                Carregando catálogo local…
               </output>
               <button type="button" data-walk-map-search-clear="" hidden>
-                Clear
+                Limpar
               </button>
               <div
                 className="explorer-search-results"
                 data-walk-map-search-results=""
-                aria-label="GTADB search results"
+                aria-label="Resultados da busca no GTADB"
               />
               <p data-walk-map-caveat="">
-                Tap a point to travel. Drag to pan; scroll or pinch to zoom. Unpositioned records
-                remain searchable.
+                Toque em um ponto para viajar. Arraste para mover o mapa; role ou use o gesto de pinça
+                para dar zoom. Registros sem posição continuam aparecendo na busca.
               </p>
-              <a href={projectPath('credits')}>Sources and credits</a>
+              <a href={projectPath('credits')}>Fontes e créditos</a>
             </aside>
           </div>
           <footer>
@@ -356,46 +373,45 @@ export default function ExplorerView({
           aria-labelledby="explorer-evidence-title"
         >
           <header>
-            <h2 id="explorer-evidence-title">What is known</h2>
+            <h2 id="explorer-evidence-title">O que se sabe</h2>
             <button type="button" data-close-walk-evidence="">
-              Close
+              Fechar
             </button>
           </header>
           <div className="explorer-dialog-copy">
             <RegionalResearch travel="explorer" />
             <p>
-              Rockstar visual evidence can establish official identity or existence. GTADB / Map GTA
-              supplies community-estimated placement. Geometry between evidence points is an
-              editorial reconstruction.
+              As evidências visuais da Rockstar podem confirmar a identidade oficial ou a existência
+              de algo. O GTADB / Map GTA fornece posicionamentos estimados pela comunidade. A
+              geometria entre os pontos de evidência é uma reconstrução editorial.
             </p>
             <dl>
-              <dt>CONFIRMED</dt>
-              <dd>Official visual identity or existence shown or named by Rockstar.</dd>
-              <dt>SUPPORTED</dt>
-              <dd>Community identification with compatible source context.</dd>
-              <dt>APPROXIMATE</dt>
-              <dd>Community-estimated placement or reconstructed geometry.</dd>
-              <dt>UNKNOWN</dt>
+              <dt>CONFIRMADO</dt>
+              <dd>Identidade visual oficial ou existência mostrada ou citada pela Rockstar.</dd>
+              <dt>CORROBORADO</dt>
+              <dd>Identificação da comunidade com contexto compatível nas fontes.</dd>
+              <dt>APROXIMADO</dt>
+              <dd>Posicionamento estimado pela comunidade ou geometria reconstruída.</dd>
+              <dt>DESCONHECIDO</dt>
               <dd>
-                Missing names, missing coverage and source flags remain visible as uncertainty; they
-                do not become confirmed geography.
+                Nomes ausentes, falta de cobertura e alertas das fontes continuam visíveis como
+                incerteza; eles não viram geografia confirmada.
               </dd>
             </dl>
             <p>
-              Procedural geometry and generated material or vegetation studies are reconstruction
-              assets, not extracted GTA VI game assets.
+              A geometria procedural e os estudos gerados de materiais e vegetação são recursos da
+              reconstrução, não arquivos extraídos do jogo GTA VI.
             </p>
             <a
               href="https://www.rockstargames.com/VI/media/screenshots"
               target="_blank"
               rel="noreferrer"
             >
-              Rockstar visual references
+              Referências visuais da Rockstar
             </a>
             <Attribution />
             <p>
-              Not affiliated with, endorsed by or sponsored by Rockstar Games or Take-Two
-              Interactive.
+              Sem afiliação, endosso ou patrocínio da Rockstar Games ou da Take-Two Interactive.
             </p>
           </div>
         </dialog>
@@ -406,24 +422,24 @@ export default function ExplorerView({
         >
           <header>
             <h2 id="explorer-scene-title" data-walk-scene-title="">
-              Documented scene
+              Cena documentada
             </h2>
             <button type="button" data-close-walk-scene="">
-              Close discovery
+              Fechar descoberta
             </button>
           </header>
           <div className="explorer-dialog-copy">
             <img data-walk-scene-image="" alt="" hidden />
-            <span data-walk-scene-evidence-label="">DOCUMENTED SOURCE EVIDENCE</span>
+            <span data-walk-scene-evidence-label="">EVIDÊNCIA DE FONTE DOCUMENTADA</span>
             <p>
               <span data-walk-scene-provenance="" /> · <strong data-walk-scene-place="" />
             </p>
             <p data-walk-scene-description="" />
             <p>
-              Source identity and appearance are documented; nearby hotspot placement and
-              interpolated geometry remain approximate.
+              A identidade e a aparência da fonte estão documentadas; o posicionamento do ponto
+              próximo e a geometria interpolada continuam aproximados.
             </p>
-            <a href={projectPath('documentation')}>Read the methodology</a>
+            <a href={projectPath('documentation')}>Ler a metodologia</a>
             {' · '}
             <a
               data-walk-scene-source=""
@@ -431,7 +447,7 @@ export default function ExplorerView({
               target="_blank"
               rel="noreferrer"
             >
-              Open cited source
+              Abrir fonte citada
             </a>
           </div>
         </dialog>

@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: #173b49;
+  background: #221c3d;
   color: #edf4ee;
   font:
     14px/1.5 Inter,
@@ -240,7 +240,7 @@
   justify-content: space-between;
   gap: 16px;
   padding: 18px 22px;
-  border-bottom: 1px solid #45636a70;
+  border-bottom: 1px solid #3a326070;
 }
 .explorer-dialog h2 {
   font-size: 21px;
@@ -301,7 +301,7 @@
 .explorer-map-drawing {
   position: relative;
   min-height: 0;
-  background: #173b49;
+  background: #221c3d;
 }
 .explorer-map-viewport {
   position: absolute;
@@ -355,7 +355,7 @@
 .explorer-destinations {
   padding: 18px;
   overflow-y: auto;
-  border-left: 1px solid #45636a;
+  border-left: 1px solid #3a3260;
   font-size: 12px;
 }
 .explorer-destinations label {
@@ -579,7 +579,7 @@
     z-index: 4;
     width: min(320px, 100%);
     background: #102d3bf5;
-    border-left: 1px solid #45636a;
+    border-left: 1px solid #3a3260;
     padding: 12px;
   }
   .explorer-map[data-destinations-open='true'] .explorer-destinations {

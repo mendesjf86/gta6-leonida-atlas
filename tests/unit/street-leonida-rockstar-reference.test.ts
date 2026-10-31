@@ -320,7 +320,7 @@ describe('Street Leonida Rockstar visual references', () => {
     });
     expect(people).toHaveLength(4);
     expect(resource.root.getObjectByName('grassrivers-dock-life-sprite')).toBeUndefined();
-    expect(signCopy.join(' ')).toMatch(/APPROXIMATE/i);
+    expect(signCopy.join(' ')).toMatch(/APROXIMADO/i);
     expect(signCopy.join(' ')).not.toMatch(/WATSON|KEY LENTO/i);
     resource.dispose();
     resource.update(3);
@@ -389,7 +389,7 @@ describe('Street Leonida Rockstar visual references', () => {
     expect(resource.root.getObjectByName('kalaga-arrival-ranger-truck')).toBeUndefined();
     expect(shelter?.userData).toMatchObject({ evidence: 'APPROXIMATE', landmarkClaim: 'NONE' });
     expect(sign?.userData).toMatchObject({ evidence: 'APPROXIMATE', placement: 'APPROXIMATE' });
-    expect(signCopy.join(' ')).toMatch(/COMMUNITY RECONSTRUCTION.*APPROXIMATE/i);
+    expect(signCopy.join(' ')).toMatch(/RECONSTRUÇÃO DA COMUNIDADE.*APROXIMADO/i);
     expect(signCopy.join(' ')).not.toMatch(/TRAILHEAD|RANGER/i);
     resource.dispose();
   });

@@ -32,8 +32,8 @@ describe('Street Leonida evidence geography', () => {
   it('does not present an unconfirmed Mount Kalaga industrial function as fact', () => {
     const profile = geography.getLeonidaZoneProfile(geography.REGION_WORLD.mountKalaga);
 
-    expect(profile.detail).toContain('rock cuts');
-    expect(profile.detail).toContain('winding roads');
+    expect(profile.detail).toContain('cortes na rocha');
+    expect(profile.detail).toContain('estradas sinuosas');
     expect(profile.detail).not.toMatch(/quarry/i);
   });
 

@@ -553,11 +553,11 @@ const REGION_ZONE_PROFILES = [
       REVIEWED_GTADB_ANCHORS.L325,
       REVIEWED_GTADB_ANCHORS.L544,
     ].map(({ gtadb }) => gtadbToWorld(gtadb)),
-    profile: { name: 'Leonida Keys', detail: 'Causeways · marinas · island waterfront' },
+    profile: { name: 'Leonida Keys', detail: 'Pontes · marinas · orla das ilhas' },
   },
   {
     anchors: [gtadbToWorld(REVIEWED_GTADB_ANCHORS.L530.gtadb)],
-    profile: { name: 'Mount Kalaga', detail: 'Forest · river · rock cuts · winding roads' },
+    profile: { name: 'Mount Kalaga', detail: 'Floresta · rio · cortes na rocha · estradas sinuosas' },
   },
   {
     anchors: [
@@ -568,7 +568,7 @@ const REGION_ZONE_PROFILES = [
       REVIEWED_GTADB_ANCHORS.L314,
       REVIEWED_GTADB_ANCHORS.L629,
     ].map(({ gtadb }) => gtadbToWorld(gtadb)),
-    profile: { name: 'Port Gellhorn', detail: 'Motels · documented anchors · low-rise sprawl' },
+    profile: { name: 'Port Gellhorn', detail: 'Motéis · pontos documentados · ocupação baixa e espalhada' },
   },
   {
     anchors: [
@@ -580,7 +580,7 @@ const REGION_ZONE_PROFILES = [
     ].map(({ gtadb }) => gtadbToWorld(gtadb)),
     profile: {
       name: 'Ambrosia',
-      detail: 'Allied Crystal Sugar Mill · agricultural context · industrial infrastructure',
+      detail: 'Allied Crystal Sugar Mill · área agrícola · infraestrutura industrial',
     },
   },
   {
@@ -589,11 +589,11 @@ const REGION_ZONE_PROFILES = [
       REVIEWED_GTADB_ANCHORS.L187,
       REVIEWED_GTADB_ANCHORS.L208,
     ].map(({ gtadb }) => gtadbToWorld(gtadb)),
-    profile: { name: 'Vice City', detail: 'Downtown · islands · port · airport' },
+    profile: { name: 'Vice City', detail: 'Centro · ilhas · porto · aeroporto' },
   },
   {
     anchors: [gtadbToWorld(REVIEWED_GTADB_ANCHORS.L1458.gtadb)],
-    profile: { name: 'Grassrivers', detail: 'Wetlands · airboats · sparse horizon' },
+    profile: { name: 'Grassrivers', detail: 'Pântanos · aerobarcos · horizonte aberto' },
   },
 ] as const;
 

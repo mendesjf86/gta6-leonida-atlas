@@ -1,14 +1,14 @@
 :root {
   font-family: Inter, system-ui, sans-serif;
   color: #f3f5ec;
-  background: #0b202c;
+  background: #110e22;
   font-synthesis: none;
   font-size: 14px;
-  --surface: #0b202c;
-  --surface-raised: #122d39;
-  --accent: #73cbbb;
-  --muted: #9fb5bd;
-  --border: #34515d;
+  --surface: #110e22;
+  --surface-raised: #1a1631;
+  --accent: #2fe6d2;
+  --muted: #a59cc4;
+  --border: #2b2548;
   --danger: #ffae9f;
   color-scheme: dark;
 }
@@ -64,8 +64,8 @@ select,
 textarea {
   width: 100%;
   color: var(--text, #f3f5ec);
-  background: #102733;
-  border: 1px solid #49616b;
+  background: #151127;
+  border: 1px solid #3a3260;
   border-radius: 4px;
   padding: 11px 12px;
   min-height: 42px;
@@ -146,7 +146,7 @@ h3 {
   align-items: center;
   gap: 9px;
   margin: 0 18px 18px;
-  border: 1px solid #49616b;
+  border: 1px solid #3a3260;
   padding: 0 10px;
   border-radius: 4px;
 }
@@ -280,7 +280,7 @@ h3 {
   color: var(--muted);
 }
 .place-result.active {
-  background: #183c45;
+  background: #241e40;
   outline: 1px solid var(--accent);
   outline-offset: -1px;
 }
@@ -337,7 +337,7 @@ h3 {
   justify-content: center;
   gap: 8px;
   background: transparent;
-  border: 1px solid #57707a;
+  border: 1px solid #4a4170;
   border-radius: 4px;
   min-height: 42px;
   padding: 10px 13px;
@@ -347,10 +347,10 @@ h3 {
 }
 .button:hover,
 .icon-button:hover {
-  background: #20434b;
+  background: #2b2548;
 }
 .button.primary {
-  color: #08242e;
+  color: #0d0a1c;
   background: var(--accent);
   border-color: var(--accent);
   font-weight: 600;
@@ -358,7 +358,7 @@ h3 {
 .button.selected {
   color: var(--accent);
   border-color: var(--accent);
-  background: #173b43;
+  background: #221c3d;
 }
 .icon-button {
   width: 38px;
@@ -378,7 +378,7 @@ h3 {
   flex: 1;
   min-width: 0;
   position: relative;
-  background: #173b49;
+  background: #221c3d;
 }
 .map-topbar {
   position: absolute;
@@ -398,8 +398,8 @@ h3 {
 }
 .map-topbar .button,
 .map-topbar .icon-button {
-  background: #0b202cef;
-  border: 1px solid #57707a;
+  background: #110e22ef;
+  border: 1px solid #4a4170;
   box-shadow: 0 2px 8px #06161d40;
   pointer-events: auto;
 }
@@ -415,7 +415,7 @@ h3 {
   left: 15px;
   z-index: 430;
   color: #e4ecec;
-  background: #0b202ce0;
+  background: #110e22e0;
   padding: 6px 9px;
   font-size: 10px;
   border-radius: 3px;
@@ -544,7 +544,7 @@ h3 {
 .atlas-dialog {
   background: var(--surface);
   color: #f3f5ec;
-  border: 1px solid #57707a;
+  border: 1px solid #4a4170;
   border-radius: 8px;
   padding: 0;
   width: min(520px, calc(100vw - 28px));
@@ -787,7 +787,7 @@ h3 {
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  background: #0b202cf5;
+  background: #110e22f5;
   border: 1px solid var(--accent);
   box-shadow: 0 3px 16px #0003;
   border-radius: 5px;

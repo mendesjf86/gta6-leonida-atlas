@@ -377,17 +377,17 @@ function normalizeSearchValue(value: string): string {
 }
 
 function landmarkLabel(landmark: GtadbLandmark): string {
-  return landmark.inGameAddress.trim() || `Unnamed GTADB marker ${landmark.id}`;
+  return landmark.inGameAddress.trim() || `Marcador GTADB sem nome ${landmark.id}`;
 }
 
 const GTADB_UNCERTAINTY_LABELS: Readonly<Record<GtadbUncertaintyReason, string>> = {
-  'unknown-name': 'unknown landmark name',
-  unconfirmed: 'unconfirmed',
-  'may-not-exist': 'may not exist',
-  cancelled: 'cancelled',
-  fictional: 'fictional',
-  demolished: 'demolished',
-  duplicate: 'duplicate record',
+  'unknown-name': 'nome do ponto desconhecido',
+  unconfirmed: 'não confirmado',
+  'may-not-exist': 'pode não existir',
+  cancelled: 'cancelado',
+  fictional: 'fictício',
+  demolished: 'demolido',
+  duplicate: 'registro duplicado',
 };
 
 function landmarkUncertaintyReasons(
@@ -466,15 +466,15 @@ function gtadbMarkerMarkup(landmark: GtadbLandmark, focusable: boolean): string 
   const uncertainty = uncertaintyReasons.join(' ') || 'none';
   const fill = /^[0-9a-f]{6}$/i.test(landmark.color) ? `#${landmark.color}` : '#9adce5';
   const uncertaintyStatus = isUncertain
-    ? `, uncertain GTADB entry: ${uncertaintyReasonLabel(uncertaintyReasons)}`
+    ? `, entrada incerta do GTADB: ${uncertaintyReasonLabel(uncertaintyReasons)}`
     : '';
   const tags = landmark.tags.length > 0 ? ` · tags: ${landmark.tags.join(', ')}` : '';
   const title = escapeSvgText(
-    `${detail.label} · NAME ${nameEvidence} · UNCERTAINTY ${uncertaintyReasons.length > 0 ? uncertaintyReasons.join(', ') : 'NONE'} · PLACEMENT APPROXIMATE${tags} · source ${coordinate(landmark.inGameCoordinates[0])}, ${coordinate(landmark.inGameCoordinates[1])}`,
+    `${detail.label} · NOME ${nameEvidence} · INCERTEZA ${uncertaintyReasons.length > 0 ? uncertaintyReasonLabel(uncertaintyReasons) : 'NENHUMA'} · POSIÇÃO APROXIMADA${tags} · origem ${coordinate(landmark.inGameCoordinates[0])}, ${coordinate(landmark.inGameCoordinates[1])}`,
   );
 
   const markerColor = isUncertain ? '#f4bd64' : '#ff4fa3';
-  return `<g data-gtadb-id="${id}" data-gtadb-confidence="${confidence}" data-gtadb-name="${nameEvidence}" data-gtadb-uncertainty="${uncertainty}" data-gtadb-transform="deterministic-pixel-aligned" data-gtadb-placement="APPROXIMATE" transform="translate(${coordinate(map.x)} ${coordinate(map.y)})" data-map-travel data-map-travel-source="gtadb" data-map-travel-id="${id}" data-map-travel-label="${label}" data-map-travel-x="${coordinate(detail.x)}" data-map-travel-z="${coordinate(detail.z)}" role="button" tabindex="${focusable ? '0' : '-1'}" aria-label="Travel to ${label}${uncertaintyStatus}, community reconstruction, approximate placement"><title>${title}</title><circle data-map-marker-hit r="150" fill="transparent" stroke="none"/><circle r="62" fill="${markerColor}" fill-opacity="${isUncertain ? '0.5' : '0.72'}" stroke="#f3fbff" stroke-opacity="0.62" stroke-width="1.1" vector-effect="non-scaling-stroke"/><circle r="23" fill="${fill}" fill-opacity="0.94"/></g>`;
+  return `<g data-gtadb-id="${id}" data-gtadb-confidence="${confidence}" data-gtadb-name="${nameEvidence}" data-gtadb-uncertainty="${uncertainty}" data-gtadb-transform="deterministic-pixel-aligned" data-gtadb-placement="APPROXIMATE" transform="translate(${coordinate(map.x)} ${coordinate(map.y)})" data-map-travel data-map-travel-source="gtadb" data-map-travel-id="${id}" data-map-travel-label="${label}" data-map-travel-x="${coordinate(detail.x)}" data-map-travel-z="${coordinate(detail.z)}" role="button" tabindex="${focusable ? '0' : '-1'}" aria-label="Viajar para ${label}${uncertaintyStatus}, reconstrução da comunidade, posicionamento aproximado"><title>${title}</title><circle data-map-marker-hit r="150" fill="transparent" stroke="none"/><circle r="62" fill="${markerColor}" fill-opacity="${isUncertain ? '0.5' : '0.72'}" stroke="#f3fbff" stroke-opacity="0.62" stroke-width="1.1" vector-effect="non-scaling-stroke"/><circle r="23" fill="${fill}" fill-opacity="0.94"/></g>`;
 }
 
 function evidenceDensityMarkup(landmarks: readonly GtadbLandmark[]): string {
@@ -515,10 +515,10 @@ function evidenceDensityMarkup(landmarks: readonly GtadbLandmark[]): string {
       ]
         .map(([x, y]) => `${coordinate(x ?? 0)},${coordinate(y ?? 0)}`)
         .join(' ');
-      return `<polygon data-density-cell data-density-count="${cell.count}" points="${points}" fill="#50cfc3" fill-opacity="${opacity.toFixed(3)}" stroke="#86e8df" stroke-opacity="0.13" stroke-width="1" vector-effect="non-scaling-stroke"><title>${cell.count} transformed GTADB evidence point${cell.count === 1 ? '' : 's'} in this cell</title></polygon>`;
+      return `<polygon data-density-cell data-density-count="${cell.count}" points="${points}" fill="#50cfc3" fill-opacity="${opacity.toFixed(3)}" stroke="#86e8df" stroke-opacity="0.13" stroke-width="1" vector-effect="non-scaling-stroke"><title>${cell.count} ${cell.count === 1 ? 'ponto de evidência do GTADB transformado' : 'pontos de evidência do GTADB transformados'} nesta célula</title></polygon>`;
     })
     .join('');
-  return `<g data-walk-map-evidence-density data-evidence="APPROXIMATE" data-density-source-count="${sourceCount}" aria-label="Density of transformed GTADB evidence points without listed uncertainty signals; not coastline geometry" pointer-events="none">${cells}</g>`;
+  return `<g data-walk-map-evidence-density data-evidence="APPROXIMATE" data-density-source-count="${sourceCount}" aria-label="Densidade de pontos de evidência do GTADB transformados sem sinais de incerteza; não representa o litoral" pointer-events="none">${cells}</g>`;
 }
 
 export function renderGtadbLandmarkLayer(
@@ -575,7 +575,7 @@ export function renderGtadbLandmarkLayer(
     snapshot.counts.positionedCount === result.renderedCount &&
     snapshot.counts.unpositionedCount === result.unpositionedCount;
 
-  layer.innerHTML = `${evidenceDensityMarkup(supportedDensityLandmarks)}<g data-walk-map-gtadb-supported data-layer-visible="true" aria-label="GTADB entries without uncertainty signals">${supportedMarkers.join('')}</g><g data-walk-map-gtadb-uncertain data-layer-visible="false" display="none" hidden aria-hidden="true" pointer-events="none" aria-label="Uncertain GTADB entries">${uncertainMarkers.join('')}</g>`;
+  layer.innerHTML = `${evidenceDensityMarkup(supportedDensityLandmarks)}<g data-walk-map-gtadb-supported data-layer-visible="true" aria-label="Entradas do GTADB sem sinais de incerteza">${supportedMarkers.join('')}</g><g data-walk-map-gtadb-uncertain data-layer-visible="false" display="none" hidden aria-hidden="true" pointer-events="none" aria-label="Entradas incertas do GTADB">${uncertainMarkers.join('')}</g>`;
   layer.setAttribute('data-gtadb-count', String(result.catalogueCount));
   layer.setAttribute('data-gtadb-rendered-count', String(result.renderedCount));
   layer.setAttribute('data-gtadb-supported-rendered-count', String(result.supportedRenderedCount));
@@ -819,12 +819,12 @@ export function getGtadbSearchResultPresentation(
   positioned: boolean,
 ): GtadbSearchResultPresentation {
   const reasons = landmarkUncertaintyReasons(landmark);
-  const placement = positioned ? 'approximate placement' : 'unpositioned';
+  const placement = positioned ? 'posicionamento aproximado' : 'sem posição';
   const uncertainty = reasons.join(' ') || 'none';
   const status =
     reasons.length > 0
-      ? `UNCERTAIN · ${uncertaintyReasonLabel(reasons)} · ${placement}`
-      : `DEFAULT LAYER · no listed uncertainty signals · ${placement}`;
+      ? `INCERTO · ${uncertaintyReasonLabel(reasons)} · ${placement}`
+      : `CAMADA PADRÃO · sem sinais de incerteza · ${placement}`;
   return {
     uncertainty,
     status,
@@ -842,15 +842,15 @@ function renderGtadbSearchResults(state: WalkMapNavigationState): void {
   const query = input.value.trim();
   if (clear) clear.hidden = query.length === 0;
   if (!snapshot) {
-    summary.textContent = 'Loading GTADB catalogue…';
+    summary.textContent = 'Carregando catálogo do GTADB…';
     results.setAttribute('aria-busy', 'true');
     return;
   }
 
   const searchResult = searchGtadbLandmarks(snapshot.landmarks, query);
   const visibleCount = searchResult.items.length;
-  const matchLabel = searchResult.totalMatches === 1 ? 'match' : 'matches';
-  summary.textContent = `${searchResult.totalMatches.toLocaleString('en-US')} ${matchLabel} · showing ${visibleCount.toLocaleString('en-US')}`;
+  const matchLabel = searchResult.totalMatches === 1 ? 'resultado' : 'resultados';
+  summary.textContent = `${searchResult.totalMatches.toLocaleString('pt-BR')} ${matchLabel} · mostrando ${visibleCount.toLocaleString('pt-BR')}`;
   dialog.dataset.walkMapSearchMatches = String(searchResult.totalMatches);
   results.replaceChildren();
   results.setAttribute('aria-busy', 'false');
@@ -858,7 +858,7 @@ function renderGtadbSearchResults(state: WalkMapNavigationState): void {
   if (visibleCount === 0) {
     const empty = results.ownerDocument.createElement('p');
     empty.className = 'street-walk-map__results-empty';
-    empty.textContent = 'No GTADB catalogue entry matches this search.';
+    empty.textContent = 'Nenhuma entrada do catálogo do GTADB corresponde a esta busca.';
     results.append(empty);
     return;
   }
@@ -917,9 +917,9 @@ type GtadbLayerName = 'supported' | 'uncertain';
 export function getGtadbLayerToggleLabel(layerName: GtadbLayerName, visible: boolean): string {
   const entries =
     layerName === 'supported'
-      ? 'GTADB entries without uncertainty signals'
-      : 'uncertain GTADB entries';
-  return `${visible ? 'Hide' : 'Show'} ${entries}`;
+      ? 'entradas do GTADB sem sinais de incerteza'
+      : 'entradas incertas do GTADB';
+  return `${visible ? 'Ocultar' : 'Mostrar'} ${entries}`;
 }
 
 function normalizedLayerName(value: string | undefined): GtadbLayerName | null {
@@ -1038,7 +1038,7 @@ function setLayerVisibility(state: WalkMapNavigationState, button: HTMLButtonEle
   syncRovingGtadbMarkerTabStop(state.svg);
   button.setAttribute('aria-pressed', String(visible));
   const toggleState = button.querySelector<HTMLElement>('[data-walk-map-toggle-state]');
-  if (toggleState) toggleState.textContent = visible ? 'Hide' : 'Show';
+  if (toggleState) toggleState.textContent = visible ? 'Ocultar' : 'Mostrar';
   button.setAttribute('aria-label', getGtadbLayerToggleLabel(layerName, visible));
   if (layerName === 'supported') {
     state.dialog.dataset.walkMapSupportedVisible = String(visible);
@@ -1089,7 +1089,7 @@ function initializeWalkMapNavigation(svg: SVGSVGElement): () => void {
     toggle.setAttribute('aria-pressed', String(visible));
     toggle.setAttribute('aria-label', getGtadbLayerToggleLabel(layerName, visible));
     const toggleState = toggle.querySelector<HTMLElement>('[data-walk-map-toggle-state]');
-    if (toggleState) toggleState.textContent = visible ? 'Hide' : 'Show';
+    if (toggleState) toggleState.textContent = visible ? 'Ocultar' : 'Mostrar';
   });
 
   const onInput = (event: Event): void => {
@@ -1171,8 +1171,8 @@ function completeMapMarkup(prefix: string): string {
     })
     .join('');
   return `
-    <title>Leonida Atlas — community cartography</title>
-    <desc>Original cartographic presentation derived from pinned GTADB / Yanis v16 community map tiles. Coastlines, roads, land cover and placements are APPROXIMATE, not official. Unmapped source areas are UNKNOWN. The established GTADB coordinate transform is unchanged. ${GTADB_ATTRIBUTION}</desc>
+    <title>Leonida Atlas · cartografia da comunidade</title>
+    <desc>Apresentação cartográfica original derivada dos blocos do mapa da comunidade GTADB / Yanis v16 fixados. Litoral, ruas, cobertura do solo e posicionamentos são APROXIMADOS, não oficiais. Áreas sem mapeamento na fonte são DESCONHECIDAS. A transformação de coordenadas do GTADB não foi alterada. ${GTADB_ATTRIBUTION}</desc>
     <defs>
       <pattern id="${prefix}-unknown" width="500" height="500" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
         <path d="M0 0V500" stroke="#bdd2ce" stroke-opacity=".07" stroke-width="18"/>
@@ -1180,9 +1180,9 @@ function completeMapMarkup(prefix: string): string {
     </defs>
     <g data-walk-map-world>
       <rect data-walk-map-neutral-frame x="${MAP_BOUNDS.minX}" y="${MAP_BOUNDS.minY}" width="${MAP_BOUNDS.width}" height="${MAP_BOUNDS.height}" fill="#173b49"/>
-      <g data-walk-map-original-cartography data-evidence="APPROXIMATE" aria-label="Source-derived community land, water, vegetation and transportation">
+      <g data-walk-map-original-cartography data-evidence="APPROXIMATE" aria-label="Terra, água, vegetação e transporte da comunidade derivados das fontes">
         <image data-atlas-basemap href="${publicPath('assets/gta6-leonida-atlas/basemap.svg')}" x="${MAP_BOUNDS.minX}" y="${MAP_BOUNDS.minY}" width="${MAP_BOUNDS.width}" height="${MAP_BOUNDS.height}" preserveAspectRatio="none"/>
-        <g data-atlas-low-evidence-continuity data-evidence="UNKNOWN" aria-label="Low-evidence continuation: no mapped GTADB source coverage">
+        <g data-atlas-low-evidence-continuity data-evidence="UNKNOWN" aria-label="Continuação com poucas evidências: sem cobertura mapeada nas fontes do GTADB">
           <rect x="-32000" y="-24000" width="10000" height="40000" fill="#183b47" fill-opacity=".92"/>
           <rect x="-32000" y="-24000" width="10000" height="40000" fill="url(#${prefix}-unknown)"/>
           <path d="M-31550 -20900C-30100 -21850 -28350 -21350 -27050 -19850S-24650 -17600 -23000 -18450" fill="none" stroke="#9bbbad" stroke-width="140" stroke-opacity=".16" stroke-linecap="round"/>
@@ -1194,21 +1194,21 @@ function completeMapMarkup(prefix: string): string {
           <circle cx="-28650" cy="-10300" r="270" fill="#9bbbad" fill-opacity=".08"/>
           <circle cx="-24900" cy="-1360" r="360" fill="#d6d4aa" fill-opacity=".06"/>
           <circle cx="-27750" cy="9800" r="510" fill="#9bbbad" fill-opacity=".07"/>
-          <text x="-27000" y="-4750" text-anchor="middle" fill="#c0d1cf" font-size="390" font-family="Inter, sans-serif" letter-spacing="62">UNKNOWN</text>
-          <text x="-27000" y="-4150" text-anchor="middle" fill="#c0d1cf" font-size="230" font-family="Inter, sans-serif">Low-evidence continuation</text>
-          <text x="-27000" y="-3680" text-anchor="middle" fill="#9db7b5" font-size="190" font-family="Inter, sans-serif">No mapped source coverage</text>
+          <text x="-27000" y="-4750" text-anchor="middle" fill="#c0d1cf" font-size="390" font-family="Inter, sans-serif" letter-spacing="62">DESCONHECIDO</text>
+          <text x="-27000" y="-4150" text-anchor="middle" fill="#c0d1cf" font-size="230" font-family="Inter, sans-serif">Continuação com poucas evidências</text>
+          <text x="-27000" y="-3680" text-anchor="middle" fill="#9db7b5" font-size="190" font-family="Inter, sans-serif">Sem cobertura mapeada nas fontes</text>
         </g>
         <g data-atlas-region-labels pointer-events="none">${labels}</g>
       </g>
-      <g data-walk-map-gtadb-locations data-gtadb-state="idle" aria-label="GTADB reconstructed landmarks"></g>
+      <g data-walk-map-gtadb-locations data-gtadb-state="idle" aria-label="Pontos de referência do GTADB reconstruídos"></g>
     </g>
     <g data-walk-map-player transform="translate(${coordinate(entry.x)} ${coordinate(entry.z)})" pointer-events="none">
-      <title data-walk-map-player-title>You are here</title>
+      <title data-walk-map-player-title>Você está aqui</title>
       <circle r="15" fill="#092333" fill-opacity=".35"/>
       <circle r="11" fill="#15d9df" stroke="#ffffff" stroke-width="3"/>
       <circle r="4" fill="#e9ffff"/>
       <g data-walk-map-heading><path d="M0-29-7-17 0-20 7-17Z" fill="#ffffff" stroke="#102735" stroke-width="1.5"/></g>
-      <g class="atlas-player-label"><rect x="20" y="-13" width="110" height="26" rx="4" fill="#0b202c" stroke="#75dadd" stroke-width=".7"/><text x="29" y="4" fill="#fff" font-family="Inter, sans-serif" font-size="10" font-weight="800" letter-spacing=".4">YOU ARE HERE</text></g>
+      <g class="atlas-player-label"><rect x="20" y="-13" width="124" height="26" rx="4" fill="#0b202c" stroke="#75dadd" stroke-width=".7"/><text x="29" y="4" fill="#fff" font-family="Inter, sans-serif" font-size="10" font-weight="800" letter-spacing=".4">VOCÊ ESTÁ AQUI</text></g>
     </g>`;
 }
 
@@ -1237,7 +1237,7 @@ export function renderCompleteLeonidaMap(svg: SVGSVGElement, snapshot?: GtadbMap
   svg.setAttribute('role', 'group');
   svg.setAttribute(
     'aria-label',
-    'Interactive transformed GTADB / Map GTA community map with community-estimated placement, deterministic pixel-aligned transform, and approximate visualization scale',
+    'Mapa interativo da comunidade GTADB / Map GTA transformado, com posicionamento estimado pela comunidade, transformação determinística alinhada a pixels e escala de visualização aproximada',
   );
   svg.innerHTML = completeMapMarkup(prefix);
   if (!snapshot) return;
@@ -1354,7 +1354,7 @@ function signedNumber(value: number, fractionDigits: number): string {
 /** Readable, explicitly non-official description of a pose on the shared coordinate frame. */
 export function describeWalkMapPose(pose: WalkMapPlayerPose): WalkMapPoseDescription {
   const degrees = normalizedHeadingDegrees(pose.yaw);
-  const cardinal = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(degrees / 45) % 8];
+  const cardinal = ['N', 'NE', 'L', 'SE', 'S', 'SO', 'O', 'NO'][Math.round(degrees / 45) % 8];
   const gtadb = worldToGtadb(pose);
   return {
     region: getLeonidaZoneProfile(pose).name,
@@ -1362,7 +1362,7 @@ export function describeWalkMapPose(pose: WalkMapPlayerPose): WalkMapPoseDescrip
     world: `VISUAL X ${signedNumber(pose.x, 0)} · Z ${signedNumber(pose.z, 0)}`,
     gtadb: `GTADB ${signedNumber(gtadb.x, 1)} · ${signedNumber(gtadb.y, 1)}`,
     evidence:
-      'NEAREST REGION: APPROXIMATE · TRANSFORM: DETERMINISTIC, PIXEL-ALIGNED · PLACEMENT: COMMUNITY ESTIMATE · SCALE: APPROXIMATE VISUALIZATION',
+      'REGIÃO MAIS PRÓXIMA: APROXIMADA · TRANSFORMAÇÃO: DETERMINÍSTICA, ALINHADA A PIXELS · POSIÇÃO: ESTIMATIVA DA COMUNIDADE · ESCALA: VISUALIZAÇÃO APROXIMADA',
   };
 }
 
@@ -1587,7 +1587,7 @@ export function createWalkMapController(
       `rotate(${coordinate(headingDegrees(playerPose.yaw))})`,
     );
     if (elements.playerTitle) {
-      elements.playerTitle.textContent = `Current position: ${coordinate(playerPose.x)}, ${coordinate(playerPose.z)}`;
+      elements.playerTitle.textContent = `Posição atual: ${coordinate(playerPose.x)}, ${coordinate(playerPose.z)}`;
     }
     const description = describeWalkMapPose(playerPose);
     if (elements.liveRegion) elements.liveRegion.textContent = description.region;
@@ -1782,7 +1782,7 @@ export function createWalkMapController(
     if (!destination || !mapDialog) return;
     dispatchWalkMapTravel(mapDialog, {
       ...destination,
-      label: 'Selected map point',
+      label: 'Ponto selecionado no mapa',
       id: `map-point:${coordinate(destination.x)}:${coordinate(destination.z)}`,
       source: 'map',
     });

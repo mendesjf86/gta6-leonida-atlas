@@ -84,20 +84,23 @@ export function createWalkWorldOverlayController(
   function disableAtlasOnlyTravelControls(): void {
     if (root.dataset.walkMode !== 'atlas-only' || !mapDialog) return;
     const title = mapDialog.querySelector<HTMLElement>('.street-walk-map__destination-title');
-    if (title && title.textContent !== 'Browse evidence') title.textContent = 'Browse evidence';
+    if (title && title.textContent !== 'Explorar evidências') title.textContent = 'Explorar evidências';
     mapDialog.querySelectorAll<Element>('[data-map-travel]').forEach((target) => {
       if (target instanceof HTMLButtonElement) {
         target.disabled = true;
         target.setAttribute('aria-disabled', 'true');
-        target.title = '3D travel is unavailable in this browser';
+        target.title = 'A viagem em 3D não está disponível neste navegador';
         return;
       }
       target.setAttribute('aria-disabled', 'true');
       target.setAttribute('role', 'img');
       target.setAttribute('tabindex', '-1');
       const label = target.getAttribute('aria-label');
-      if (label?.startsWith('Travel to ')) {
-        target.setAttribute('aria-label', `Evidence point: ${label.slice('Travel to '.length)}`);
+      if (label?.startsWith('Viajar para ')) {
+        target.setAttribute(
+          'aria-label',
+          `Ponto de evidência: ${label.slice('Viajar para '.length)}`,
+        );
       }
     });
   }

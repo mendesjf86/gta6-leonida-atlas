@@ -244,13 +244,13 @@ const fragileCatalogue = snapshot([
 describe('Street Leonida GTADB map layer', () => {
   it('keeps layer-toggle copy scoped to source uncertainty after interaction', () => {
     expect(getGtadbLayerToggleLabel('supported', true)).toBe(
-      'Hide GTADB entries without uncertainty signals',
+      'Ocultar entradas do GTADB sem sinais de incerteza',
     );
     expect(getGtadbLayerToggleLabel('supported', false)).toBe(
-      'Show GTADB entries without uncertainty signals',
+      'Mostrar entradas do GTADB sem sinais de incerteza',
     );
-    expect(getGtadbLayerToggleLabel('uncertain', true)).toBe('Hide uncertain GTADB entries');
-    expect(getGtadbLayerToggleLabel('uncertain', false)).toBe('Show uncertain GTADB entries');
+    expect(getGtadbLayerToggleLabel('uncertain', true)).toBe('Ocultar entradas incertas do GTADB');
+    expect(getGtadbLayerToggleLabel('uncertain', false)).toBe('Mostrar entradas incertas do GTADB');
   });
 
   it('preserves source orientation through the deterministic transform while marking placement approximate', () => {
@@ -276,11 +276,11 @@ describe('Street Leonida GTADB map layer', () => {
       'data-walk-map-evidence-density data-evidence="APPROXIMATE" data-density-source-count="2"',
     );
     expect(layer.innerHTML).toContain(
-      'aria-label="Density of transformed GTADB evidence points without listed uncertainty signals; not coastline geometry"',
+      'aria-label="Densidade de pontos de evidência do GTADB transformados sem sinais de incerteza; não representa o litoral"',
     );
     expect(layer.innerHTML).toContain('data-density-cell');
-    expect(layer.innerHTML).toContain('aria-label="GTADB entries without uncertainty signals"');
-    expect(layer.innerHTML).toContain('aria-label="Uncertain GTADB entries"');
+    expect(layer.innerHTML).toContain('aria-label="Entradas do GTADB sem sinais de incerteza"');
+    expect(layer.innerHTML).toContain('aria-label="Entradas incertas do GTADB"');
     expect(layer.innerHTML).not.toMatch(/\bexact\b/i);
     expect(attributes.get('data-gtadb-attribution')).toBe(GTADB_ATTRIBUTION);
     expect(attributes.get('data-gtadb-caveat')).toBe(GTADB_PRESENTATION_NOTICE);
@@ -334,7 +334,7 @@ describe('Street Leonida GTADB map layer', () => {
       expect(uncertainLayerMarkup).toContain(`data-gtadb-id="${id}"`);
     }
     expect(uncertainLayerMarkup).toMatch(
-      /data-gtadb-id="L162" data-gtadb-confidence="SUPPORTED" data-gtadb-name="KNOWN" data-gtadb-uncertainty="unconfirmed may-not-exist"[^>]+data-map-travel-x="20" data-map-travel-z="-40"[^>]+aria-label="Travel to Water Tower, Waning Sands, uncertain GTADB entry: unconfirmed; may not exist, community reconstruction, approximate placement"/,
+      /data-gtadb-id="L162" data-gtadb-confidence="SUPPORTED" data-gtadb-name="KNOWN" data-gtadb-uncertainty="unconfirmed may-not-exist"[^>]+data-map-travel-x="20" data-map-travel-z="-40"[^>]+aria-label="Viajar para Water Tower, Waning Sands, entrada incerta do GTADB: não confirmado; pode não existir, reconstrução da comunidade, posicionamento aproximado"/,
     );
     expect(layer.innerHTML).toContain(
       'data-walk-map-evidence-density data-evidence="APPROXIMATE" data-density-source-count="1"',
@@ -349,7 +349,7 @@ describe('Street Leonida GTADB map layer', () => {
     renderGtadbLandmarkLayer(layer, representativeCatalogue);
 
     expect(layer.innerHTML).toMatch(
-      /data-gtadb-id="L32"[^>]+aria-label="Travel to Hotel Dixon, Shore Dr, Vice Beach, community reconstruction, approximate placement"/,
+      /data-gtadb-id="L32"[^>]+aria-label="Viajar para Hotel Dixon, Shore Dr, Vice Beach, reconstrução da comunidade, posicionamento aproximado"/,
     );
   });
 
@@ -385,15 +385,15 @@ describe('Street Leonida GTADB map layer', () => {
   it('provides an explicit uncertainty badge and accessible search-result label', () => {
     expect(getGtadbSearchResultPresentation(fragileCatalogue.landmarks[1]!, true)).toEqual({
       uncertainty: 'unconfirmed may-not-exist',
-      status: 'UNCERTAIN · unconfirmed; may not exist · approximate placement',
+      status: 'INCERTO · não confirmado; pode não existir · posicionamento aproximado',
       ariaLabel:
-        'Water Tower, Waning Sands (L162) · UNCERTAIN · unconfirmed; may not exist · approximate placement',
+        'Water Tower, Waning Sands (L162) · INCERTO · não confirmado; pode não existir · posicionamento aproximado',
     });
     expect(getGtadbSearchResultPresentation(fragileCatalogue.landmarks[0]!, true)).toEqual({
       uncertainty: 'none',
-      status: 'DEFAULT LAYER · no listed uncertainty signals · approximate placement',
+      status: 'CAMADA PADRÃO · sem sinais de incerteza · posicionamento aproximado',
       ariaLabel:
-        'Clean named entry, Leonida (L900) · DEFAULT LAYER · no listed uncertainty signals · approximate placement',
+        'Clean named entry, Leonida (L900) · CAMADA PADRÃO · sem sinais de incerteza · posicionamento aproximado',
     });
   });
 
@@ -430,8 +430,8 @@ describe('Street Leonida GTADB map layer', () => {
     expect(attributes.get('data-walk-map-attribution')).toContain(GTADB_REVISION);
     expect(attributes.get('data-walk-map-cartography')).toBe('source-derived-community-atlas');
     expect(attributes.get('role')).toBe('group');
-    expect(attributes.get('aria-label')).toContain('community-estimated placement');
-    expect(attributes.get('aria-label')).toContain('approximate visualization scale');
+    expect(attributes.get('aria-label')).toContain('posicionamento estimado pela comunidade');
+    expect(attributes.get('aria-label')).toContain('escala de visualização aproximada');
     expect([...attributes.values()].join(' ')).not.toMatch(/\b(?:exact|metres?)\b/i);
     expect(svg.innerHTML).toContain('data-walk-map-original-cartography');
     expect(svg.innerHTML).toContain('data-evidence="APPROXIMATE"');
@@ -445,8 +445,8 @@ describe('Street Leonida GTADB map layer', () => {
     expect(svg.innerHTML).not.toContain('gtadb-yanis-16-z5-overview.webp');
     expect(svg.innerHTML).not.toContain('State of Leonida');
     expect(svg.innerHTML).not.toContain('APPROXIMATE REGIONAL FIELD');
-    expect(svg.innerHTML).toContain('coordinate transform is unchanged');
-    expect(svg.innerHTML).toContain('Unmapped source areas are UNKNOWN');
+    expect(svg.innerHTML).toContain('transformação de coordenadas do GTADB não foi alterada');
+    expect(svg.innerHTML).toContain('Áreas sem mapeamento na fonte são DESCONHECIDAS');
     expect(svg.innerHTML).not.toMatch(/\b(?:exact|metres?)\b/i);
   });
 
@@ -457,12 +457,12 @@ describe('Street Leonida GTADB map layer', () => {
       world: 'VISUAL X +3,947 · Z −1,474',
       gtadb: 'GTADB +1,973.5 · +737.0',
       evidence:
-        'NEAREST REGION: APPROXIMATE · TRANSFORM: DETERMINISTIC, PIXEL-ALIGNED · PLACEMENT: COMMUNITY ESTIMATE · SCALE: APPROXIMATE VISUALIZATION',
+        'REGIÃO MAIS PRÓXIMA: APROXIMADA · TRANSFORMAÇÃO: DETERMINÍSTICA, ALINHADA A PIXELS · POSIÇÃO: ESTIMATIVA DA COMUNIDADE · ESCALA: VISUALIZAÇÃO APROXIMADA',
     });
 
     expect(describeWalkMapPose({ x: -6033.0214, z: -6693.3247, yaw: Math.PI / 2 })).toMatchObject({
       region: 'Ambrosia',
-      heading: 'W · 270°',
+      heading: 'O · 270°',
       gtadb: 'GTADB −3,016.5 · +3,346.7',
     });
   });

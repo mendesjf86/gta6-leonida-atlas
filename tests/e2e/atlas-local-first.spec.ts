@@ -2,88 +2,88 @@ import { readFile } from 'node:fs/promises';
 import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import type { Backup } from '../../src/domain/types';
 
-const sidebar = (page: Page) => page.getByRole('complementary', { name: 'Atlas sidebar' });
-const details = (page: Page) => page.getByRole('complementary', { name: 'Place details' });
+const sidebar = (page: Page) => page.getByRole('complementary', { name: 'Painel lateral do mapa' });
+const details = (page: Page) => page.getByRole('complementary', { name: 'Detalhes do local' });
 const search = (page: Page) =>
-  page.getByRole('searchbox', { name: 'Search places, regions, tags' });
+  page.getByRole('searchbox', { name: 'Buscar locais, regiões, tags' });
 
 async function openSidebar(page: Page): Promise<void> {
   if (!(await sidebar(page).isVisible())) {
-    await page.getByRole('button', { name: 'Open sidebar', exact: true }).click();
+    await page.getByRole('button', { name: 'Abrir painel lateral', exact: true }).click();
   }
   await expect(sidebar(page)).toBeVisible();
 }
 
 async function openAtlas(page: Page): Promise<void> {
   await page.goto('/');
-  await expect(page).toHaveTitle(/Leonida Atlas/);
+  await expect(page).toHaveTitle(/Mapa de Leonida/);
   await expect(
-    page.getByRole('region', { name: 'Leonida interactive map', exact: true }),
+    page.getByRole('region', { name: 'Mapa interativo de Leonida', exact: true }),
   ).toBeVisible();
   const basemap = page.getByRole('img', {
-    name: 'Approximate GTADB community reconstruction of Leonida',
+    name: 'Reconstrução aproximada de Leonida feita pela comunidade do GTADB',
   });
   await expect(basemap).toBeVisible();
   await expect(basemap).toHaveJSProperty('complete', true);
   expect(
     await basemap.evaluate((image) => (image as HTMLImageElement).naturalWidth),
   ).toBeGreaterThan(0);
-  await expect(page.getByRole('button', { name: 'Add marker', exact: true })).toBeEnabled();
+  await expect(page.getByRole('button', { name: 'Adicionar marcador', exact: true })).toBeEnabled();
 }
 
 async function selectRegion(page: Page, name = 'Ambrosia'): Promise<void> {
   await openSidebar(page);
-  await sidebar(page).getByRole('button', { name: 'Explore', exact: true }).click();
-  await page.getByLabel('Browse categories').selectOption('region');
+  await sidebar(page).getByRole('button', { name: 'Explorar', exact: true }).click();
+  await page.getByLabel('Categorias').selectOption('region');
   await search(page).fill(name);
   await page
     .locator('.place-results')
-    .getByRole('button', { name: new RegExp(`^${name} Region`) })
+    .getByRole('button', { name: new RegExp(`^${name} Região`) })
     .click();
   await expect(details(page).getByRole('heading', { name, exact: true })).toBeVisible();
 }
 
 async function createCollection(page: Page, name: string): Promise<void> {
   await openSidebar(page);
-  await sidebar(page).getByRole('button', { name: 'Saved', exact: true }).click();
-  await page.getByLabel('Collection name', { exact: true }).fill(name);
-  await page.getByRole('button', { name: 'Create collection', exact: true }).click();
-  await expect(page.getByRole('button', { name: `Rename ${name}`, exact: true })).toBeVisible();
+  await sidebar(page).getByRole('button', { name: 'Salvos', exact: true }).click();
+  await page.getByLabel('Nome da coleção', { exact: true }).fill(name);
+  await page.getByRole('button', { name: 'Criar coleção', exact: true }).click();
+  await expect(page.getByRole('button', { name: `Renomear ${name}`, exact: true })).toBeVisible();
 }
 
 async function createMarker(page: Page, title: string): Promise<void> {
-  if (await page.getByRole('button', { name: 'Close sidebar', exact: true }).isVisible()) {
-    await page.getByRole('button', { name: 'Close sidebar', exact: true }).click();
+  if (await page.getByRole('button', { name: 'Fechar painel lateral', exact: true }).isVisible()) {
+    await page.getByRole('button', { name: 'Fechar painel lateral', exact: true }).click();
   }
-  await page.getByRole('button', { name: 'Add marker', exact: true }).click();
-  await page.getByRole('button', { name: 'Enter coordinates', exact: true }).click();
-  const editor = page.getByRole('dialog', { name: 'New personal marker', exact: true });
+  await page.getByRole('button', { name: 'Adicionar marcador', exact: true }).click();
+  await page.getByRole('button', { name: 'Digitar coordenadas', exact: true }).click();
+  const editor = page.getByRole('dialog', { name: 'Novo marcador pessoal', exact: true });
   await expect(editor).toBeVisible();
-  await editor.getByLabel('Title', { exact: true }).fill(title);
-  await editor.getByLabel('Description', { exact: true }).fill('A private map annotation');
-  await editor.getByLabel('Game X', { exact: true }).fill('-1200');
-  await editor.getByLabel('Game Y', { exact: true }).fill('900');
-  await editor.getByLabel('Icon', { exact: true }).selectOption('flag');
-  await editor.getByRole('button', { name: 'Save marker', exact: true }).click();
+  await editor.getByLabel('Título', { exact: true }).fill(title);
+  await editor.getByLabel('Descrição', { exact: true }).fill('A private map annotation');
+  await editor.getByLabel('X no jogo', { exact: true }).fill('-1200');
+  await editor.getByLabel('Y no jogo', { exact: true }).fill('900');
+  await editor.getByLabel('Ícone', { exact: true }).selectOption('flag');
+  await editor.getByRole('button', { name: 'Salvar marcador', exact: true }).click();
   await expect(editor).not.toBeVisible();
   await expect(details(page).getByRole('heading', { name: title, exact: true })).toBeVisible();
 }
 
 async function openBackup(page: Page): Promise<void> {
-  if (await page.getByRole('dialog', { name: 'Your local backup', exact: true }).isVisible())
+  if (await page.getByRole('dialog', { name: 'Seu backup local', exact: true }).isVisible())
     return;
   if (await details(page).isVisible()) {
-    await page.getByRole('button', { name: 'Close place details', exact: true }).click();
+    await page.getByRole('button', { name: 'Fechar detalhes do local', exact: true }).click();
   }
   await openSidebar(page);
   await sidebar(page).getByRole('button', { name: 'Backup', exact: true }).click();
-  await expect(page.getByRole('dialog', { name: 'Your local backup', exact: true })).toBeVisible();
+  await expect(page.getByRole('dialog', { name: 'Seu backup local', exact: true })).toBeVisible();
 }
 
 async function exportBackup(page: Page, testInfo: TestInfo, label: string): Promise<Backup> {
   await openBackup(page);
   const downloading = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Export backup', exact: true }).click();
+  await page.getByRole('button', { name: 'Exportar backup', exact: true }).click();
   const download = await downloading;
   const path = `/tmp/atlas-qa-backup-${testInfo.project.name}-${label}.json`;
   await download.saveAs(path);
@@ -135,31 +135,31 @@ test('the map opens without an account, filters public evidence, and toggles vis
   });
   await openSidebar(page);
   await expect(
-    sidebar(page).getByRole('heading', { name: 'LEONIDA ATLAS', exact: true }),
+    sidebar(page).getByRole('heading', { name: 'Mapa de Leonida', exact: true }),
   ).toBeVisible();
   await expect(page.locator('vite-error-overlay')).toHaveCount(0);
-  await page.getByLabel('Browse categories').selectOption('region');
+  await page.getByLabel('Categorias').selectOption('region');
   await expect(page.locator('.place-results .place-result').first()).toContainText(
-    'Region · approximate',
+    'Região · aproximado',
   );
-  await page.getByLabel('Evidence filter').selectOption('uncertain');
-  await expect(page.getByText('No places match these filters.', { exact: false })).toBeVisible();
-  await page.getByLabel('Browse categories').selectOption('all');
+  await page.getByLabel('Filtro de fonte').selectOption('uncertain');
+  await expect(page.getByText('Nenhum local corresponde a esses filtros.', { exact: false })).toBeVisible();
+  await page.getByLabel('Categorias').selectOption('all');
   await expect(page.locator('.place-results .place-result').first()).toContainText(
-    'Uncertain · approximate',
+    'Incerto · aproximado',
   );
-  await page.getByRole('button', { name: 'Reset filters', exact: true }).click();
+  await page.getByRole('button', { name: 'Limpar filtros', exact: true }).click();
   await selectRegion(page);
-  await page.getByRole('button', { name: 'Close place details', exact: true }).click();
+  await page.getByRole('button', { name: 'Fechar detalhes do local', exact: true }).click();
   await openSidebar(page);
-  await sidebar(page).getByRole('button', { name: 'Layers', exact: true }).click();
-  const regionLayer = page.getByRole('checkbox', { name: /^Named regions/ });
+  await sidebar(page).getByRole('button', { name: 'Camadas', exact: true }).click();
+  const regionLayer = page.getByRole('checkbox', { name: /^Regiões com nome/ });
   await expect(regionLayer).toBeChecked();
   await regionLayer.uncheck();
   await expect(regionLayer).not.toBeChecked();
-  await expect(page.locator('.atlas-map-caption')).toHaveText('0 places in view');
+  await expect(page.locator('.atlas-map-caption')).toHaveText('0 locais na tela');
   await regionLayer.check();
-  await expect(page.locator('.atlas-map-caption')).toHaveText('1 places in view');
+  await expect(page.locator('.atlas-map-caption')).toHaveText('1 local na tela');
   await page.screenshot({
     path: `/tmp/atlas-qa-${testInfo.project.name}-layers.png`,
     fullPage: true,
@@ -177,38 +177,38 @@ test('a renamed collection, favorite and note survive a browser reload', async (
 }, testInfo) => {
   await openAtlas(page);
   await createCollection(page, 'Weekend route');
-  await page.getByRole('button', { name: 'Rename Weekend route', exact: true }).click();
-  await page.getByLabel('Collection name', { exact: true }).fill('Sunset route');
-  await page.getByRole('button', { name: 'Save collection name', exact: true }).click();
+  await page.getByRole('button', { name: 'Renomear Weekend route', exact: true }).click();
+  await page.getByLabel('Nome da coleção', { exact: true }).fill('Sunset route');
+  await page.getByRole('button', { name: 'Salvar nome da coleção', exact: true }).click();
   await expect(
-    page.getByRole('button', { name: 'Rename Sunset route', exact: true }),
+    page.getByRole('button', { name: 'Renomear Sunset route', exact: true }),
   ).toBeVisible();
   await selectRegion(page);
-  await details(page).getByRole('button', { name: 'Add to favorites', exact: true }).click();
+  await details(page).getByRole('button', { name: 'Adicionar aos favoritos', exact: true }).click();
   await expect(
-    details(page).getByRole('button', { name: 'Saved to favorites', exact: true }),
+    details(page).getByRole('button', { name: 'Salvo nos favoritos', exact: true }),
   ).toBeVisible();
   await details(page)
-    .getByLabel('Notes', { exact: true })
+    .getByLabel('Notas', { exact: true })
     .fill('Return to Ambrosia before sunset.');
-  await details(page).getByRole('button', { name: 'Save note', exact: true }).click();
-  await expect(details(page).getByRole('button', { name: 'Saved', exact: true })).toBeVisible();
+  await details(page).getByRole('button', { name: 'Salvar nota', exact: true }).click();
+  await expect(details(page).getByRole('button', { name: 'Salvo', exact: true })).toBeVisible();
   await details(page)
-    .getByLabel('Add to collection', { exact: true })
+    .getByLabel('Adicionar a uma coleção', { exact: true })
     .selectOption({ label: 'Sunset route' });
   await expect(
-    details(page).getByRole('button', { name: 'Remove from Sunset route', exact: true }),
+    details(page).getByRole('button', { name: 'Remover de Sunset route', exact: true }),
   ).toBeVisible();
   await page.reload();
   await selectRegion(page);
   await expect(
-    details(page).getByRole('button', { name: 'Saved to favorites', exact: true }),
+    details(page).getByRole('button', { name: 'Salvo nos favoritos', exact: true }),
   ).toBeVisible();
-  await expect(details(page).getByLabel('Notes', { exact: true })).toHaveValue(
+  await expect(details(page).getByLabel('Notas', { exact: true })).toHaveValue(
     'Return to Ambrosia before sunset.',
   );
   await expect(
-    details(page).getByRole('button', { name: 'Remove from Sunset route', exact: true }),
+    details(page).getByRole('button', { name: 'Remover de Sunset route', exact: true }),
   ).toBeVisible();
   await page.screenshot({
     path: `/tmp/atlas-qa-${testInfo.project.name}-saved-place.png`,
@@ -222,47 +222,47 @@ test('a personal marker can be edited, moved and deleted with its saved referenc
   await openAtlas(page);
   await createCollection(page, 'Personal trip');
   await createMarker(page, 'Quiet beach');
-  await details(page).getByRole('button', { name: 'Add to favorites', exact: true }).click();
+  await details(page).getByRole('button', { name: 'Adicionar aos favoritos', exact: true }).click();
   await expect(
-    details(page).getByRole('button', { name: 'Saved to favorites', exact: true }),
+    details(page).getByRole('button', { name: 'Salvo nos favoritos', exact: true }),
   ).toBeVisible();
   await details(page)
-    .getByLabel('Notes', { exact: true })
+    .getByLabel('Notas', { exact: true })
     .fill('A private note to remove with this marker.');
-  await details(page).getByRole('button', { name: 'Save note', exact: true }).click();
-  await expect(details(page).getByRole('button', { name: 'Saved', exact: true })).toBeVisible();
+  await details(page).getByRole('button', { name: 'Salvar nota', exact: true }).click();
+  await expect(details(page).getByRole('button', { name: 'Salvo', exact: true })).toBeVisible();
   await details(page)
-    .getByLabel('Add to collection', { exact: true })
+    .getByLabel('Adicionar a uma coleção', { exact: true })
     .selectOption({ label: 'Personal trip' });
   await expect(
-    details(page).getByRole('button', { name: 'Remove from Personal trip', exact: true }),
+    details(page).getByRole('button', { name: 'Remover de Personal trip', exact: true }),
   ).toBeVisible();
-  await details(page).getByRole('button', { name: 'Edit marker', exact: true }).click();
-  let editor = page.getByRole('dialog', { name: 'Edit personal marker', exact: true });
-  await editor.getByLabel('Title', { exact: true }).fill('Quiet beach overlook');
-  await editor.getByRole('button', { name: 'Save marker', exact: true }).click();
+  await details(page).getByRole('button', { name: 'Editar marcador', exact: true }).click();
+  let editor = page.getByRole('dialog', { name: 'Editar marcador pessoal', exact: true });
+  await editor.getByLabel('Título', { exact: true }).fill('Quiet beach overlook');
+  await editor.getByRole('button', { name: 'Salvar marcador', exact: true }).click();
   await expect(
     details(page).getByRole('heading', { name: 'Quiet beach overlook', exact: true }),
   ).toBeVisible();
-  await details(page).getByRole('button', { name: 'Move', exact: true }).click();
-  await page.getByRole('button', { name: 'Enter coordinates', exact: true }).click();
-  editor = page.getByRole('dialog', { name: 'Edit personal marker', exact: true });
-  await editor.getByLabel('Game X', { exact: true }).fill('-1000');
-  await editor.getByLabel('Game Y', { exact: true }).fill('1200');
-  await editor.getByRole('button', { name: 'Save marker', exact: true }).click();
-  await expect(details(page)).toContainText('-1000.0, 1200.0');
+  await details(page).getByRole('button', { name: 'Mover', exact: true }).click();
+  await page.getByRole('button', { name: 'Digitar coordenadas', exact: true }).click();
+  editor = page.getByRole('dialog', { name: 'Editar marcador pessoal', exact: true });
+  await editor.getByLabel('X no jogo', { exact: true }).fill('-1000');
+  await editor.getByLabel('Y no jogo', { exact: true }).fill('1200');
+  await editor.getByRole('button', { name: 'Salvar marcador', exact: true }).click();
+  await expect(details(page)).toContainText('-1.000,0; 1.200,0');
   await page.reload();
   await openSidebar(page);
   await search(page).fill('Quiet beach overlook');
   await page
     .locator('.place-results')
-    .getByRole('button', { name: /^Quiet beach overlook Personal marker/ })
+    .getByRole('button', { name: /^Quiet beach overlook Marcador pessoal/ })
     .click();
-  await expect(details(page)).toContainText('-1000.0, 1200.0');
-  await details(page).getByRole('button', { name: 'Edit marker', exact: true }).click();
-  editor = page.getByRole('dialog', { name: 'Edit personal marker', exact: true });
-  await editor.getByRole('button', { name: 'Delete marker', exact: true }).click();
-  await editor.getByRole('button', { name: 'Confirm deletion', exact: true }).click();
+  await expect(details(page)).toContainText('-1.000,0; 1.200,0');
+  await details(page).getByRole('button', { name: 'Editar marcador', exact: true }).click();
+  editor = page.getByRole('dialog', { name: 'Editar marcador pessoal', exact: true });
+  await editor.getByRole('button', { name: 'Apagar marcador', exact: true }).click();
+  await editor.getByRole('button', { name: 'Confirmar exclusão', exact: true }).click();
   await expect(editor).not.toBeVisible();
   await expect(details(page)).not.toBeVisible();
   const backup = await exportBackup(page, testInfo, 'deleted-marker');
@@ -281,14 +281,14 @@ test('backup validation and preview preserve current data until a confirmed merg
   const original = await exportBackup(page, testInfo, 'original');
   expect(original).toMatchObject({ format: 'leonida-atlas', version: 2 });
   expect(original.markers).toHaveLength(1);
-  const fileInput = page.getByLabel('Import a backup', { exact: true });
+  const fileInput = page.getByLabel('Importar um backup', { exact: true });
   await fileInput.setInputFiles({
     name: 'unsupported.json',
     mimeType: 'application/json',
     buffer: Buffer.from(JSON.stringify({ ...original, version: 999 })),
   });
   await expect(page.getByRole('alert')).toContainText('version');
-  await expect(page.getByRole('button', { name: 'Merge backup', exact: true })).not.toBeVisible();
+  await expect(page.getByRole('button', { name: 'Mesclar backup', exact: true })).not.toBeVisible();
   expect(savedData(await exportBackup(page, testInfo, 'after-invalid'))).toEqual(
     savedData(original),
   );
@@ -304,22 +304,22 @@ test('backup validation and preview preserve current data until a confirmed merg
     mimeType: 'application/json',
     buffer: Buffer.from(JSON.stringify(imported)),
   });
-  await expect(page.getByRole('region', { name: 'Backup preview', exact: true })).toContainText(
-    '2 markers',
+  await expect(page.getByRole('region', { name: 'Prévia do backup', exact: true })).toContainText(
+    '2 marcadores',
   );
   expect(savedData(await exportBackup(page, testInfo, 'before-merge'))).toEqual(
     savedData(original),
   );
-  await page.getByRole('button', { name: 'Cancel import', exact: true }).click();
-  await expect(page.getByRole('button', { name: 'Merge backup', exact: true })).not.toBeVisible();
+  await page.getByRole('button', { name: 'Cancelar importação', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Mesclar backup', exact: true })).not.toBeVisible();
   await fileInput.setInputFiles({
     name: 'valid-confirmed.json',
     mimeType: 'application/json',
     buffer: Buffer.from(JSON.stringify(imported)),
   });
-  await page.getByRole('button', { name: 'Merge backup', exact: true }).click();
+  await page.getByRole('button', { name: 'Mesclar backup', exact: true }).click();
   await expect(
-    page.getByText('Backup merged. Your local data is saved.', { exact: true }),
+    page.getByText('Backup mesclado. Seus dados locais estão salvos.', { exact: true }),
   ).toBeVisible();
   const merged = await exportBackup(page, testInfo, 'after-merge');
   expect(merged.markers.map((marker) => marker.title).sort()).toEqual([
@@ -340,14 +340,14 @@ test('the installed app reloads offline with its saved preferences and personal 
   test.setTimeout(60_000);
   await openAtlas(page);
   await createMarker(page, 'Offline stop');
-  await page.getByRole('button', { name: 'Close place details', exact: true }).click();
+  await page.getByRole('button', { name: 'Fechar detalhes do local', exact: true }).click();
   await openSidebar(page);
-  await sidebar(page).getByRole('button', { name: 'Settings', exact: true }).click();
-  const reducedMotion = page.getByRole('checkbox', { name: /^Reduce motion/ });
+  await sidebar(page).getByRole('button', { name: 'Ajustes', exact: true }).click();
+  const reducedMotion = page.getByRole('checkbox', { name: /^Reduzir movimento/ });
   await reducedMotion.click();
   await expect(reducedMotion).toBeChecked();
   await expect(page.locator('html')).toHaveAttribute('data-reduced-motion', 'true');
-  await page.getByRole('button', { name: 'Close dialog', exact: true }).click();
+  await page.getByRole('button', { name: 'Fechar janela', exact: true }).click();
   await page.waitForFunction(
     async () => Boolean((await navigator.serviceWorker.getRegistration())?.active),
     undefined,
@@ -373,7 +373,7 @@ test('the installed app reloads offline with its saved preferences and personal 
       throw error;
     }
     const basemap = page.getByRole('img', {
-      name: 'Approximate GTADB community reconstruction of Leonida',
+      name: 'Reconstrução aproximada de Leonida feita pela comunidade do GTADB',
     });
     await expect(basemap).toHaveJSProperty('complete', true);
     expect(
@@ -394,7 +394,7 @@ test('the installed app reloads offline with its saved preferences and personal 
     await search(page).fill('Offline stop');
     await page
       .locator('.place-results')
-      .getByRole('button', { name: /^Offline stop Personal marker/ })
+      .getByRole('button', { name: /^Offline stop Marcador pessoal/ })
       .click();
     await expect(
       details(page).getByRole('heading', { name: 'Offline stop', exact: true }),
@@ -404,7 +404,7 @@ test('the installed app reloads offline with its saved preferences and personal 
       path: `/tmp/atlas-qa-${testInfo.project.name}-offline.png`,
       fullPage: true,
     });
-    await page.getByRole('button', { name: 'Close place details', exact: true }).click();
+    await page.getByRole('button', { name: 'Fechar detalhes do local', exact: true }).click();
     await selectRegion(page);
     await expect(
       details(page).getByRole('heading', { name: 'Ambrosia', exact: true }),
@@ -418,13 +418,13 @@ test('keyboard search and modal dismissal preserve focus and usable navigation',
   page,
 }) => {
   await openAtlas(page);
-  await page.getByRole('region', { name: 'Leonida interactive map', exact: true }).focus();
+  await page.getByRole('region', { name: 'Mapa interativo de Leonida', exact: true }).focus();
   await page.keyboard.press('/');
   await expect(search(page)).toBeFocused();
   await search(page).fill('Ambrosia');
-  const settings = sidebar(page).getByRole('button', { name: 'Settings', exact: true });
+  const settings = sidebar(page).getByRole('button', { name: 'Ajustes', exact: true });
   await settings.click();
-  const dialog = page.getByRole('dialog', { name: 'Atlas settings', exact: true });
+  const dialog = page.getByRole('dialog', { name: 'Ajustes do mapa', exact: true });
   await expect(dialog).toBeVisible();
   for (let index = 0; index < 7; index++) {
     await page.keyboard.press('Tab');
@@ -450,20 +450,20 @@ test('blocked local storage keeps the public map usable and never reports a succ
   });
   await page.goto('/');
   await expect(
-    page.getByRole('region', { name: 'Leonida interactive map', exact: true }),
+    page.getByRole('region', { name: 'Mapa interativo de Leonida', exact: true }),
   ).toBeVisible();
   await openSidebar(page);
-  await expect(page.getByText('Local storage needs attention', { exact: true })).toBeVisible();
-  await expect(page.getByText('Local data saved', { exact: true })).not.toBeVisible();
-  await expect(page.getByRole('button', { name: 'Add marker', exact: true })).toBeDisabled();
-  await page.getByRole('button', { name: 'Retry storage', exact: true }).click();
-  await expect(page.getByText('Local storage needs attention', { exact: true })).toBeVisible();
+  await expect(page.getByText('O armazenamento local precisa de atenção', { exact: true })).toBeVisible();
+  await expect(page.getByText('Dados salvos neste aparelho', { exact: true })).not.toBeVisible();
+  await expect(page.getByRole('button', { name: 'Adicionar marcador', exact: true })).toBeDisabled();
+  await page.getByRole('button', { name: 'Tentar de novo', exact: true }).click();
+  await expect(page.getByText('O armazenamento local precisa de atenção', { exact: true })).toBeVisible();
   await selectRegion(page);
   await expect(details(page).getByRole('heading', { name: 'Ambrosia', exact: true })).toBeVisible();
   await expect(
-    details(page).getByRole('button', { name: 'Add to favorites', exact: true }),
+    details(page).getByRole('button', { name: 'Adicionar aos favoritos', exact: true }),
   ).toBeDisabled();
-  await expect(details(page).getByLabel('Notes', { exact: true })).toBeDisabled();
+  await expect(details(page).getByLabel('Notas', { exact: true })).toBeDisabled();
 });
 
 test('clean note editors synchronize across tabs without overwriting newer saved text', async ({
@@ -476,16 +476,16 @@ test('clean note editors synchronize across tabs without overwriting newer saved
   try {
     await openAtlas(second);
     await selectRegion(second);
-    await details(second).getByLabel('Notes', { exact: true }).fill('Written in the second tab.');
-    await details(second).getByRole('button', { name: 'Save note', exact: true }).click();
-    await expect(details(second).getByRole('button', { name: 'Saved', exact: true })).toBeVisible();
-    const firstNote = details(page).getByLabel('Notes', { exact: true });
+    await details(second).getByLabel('Notas', { exact: true }).fill('Written in the second tab.');
+    await details(second).getByRole('button', { name: 'Salvar nota', exact: true }).click();
+    await expect(details(second).getByRole('button', { name: 'Salvo', exact: true })).toBeVisible();
+    const firstNote = details(page).getByLabel('Notas', { exact: true });
     await expect(firstNote).toHaveValue('Written in the second tab.');
     await firstNote.focus();
     await details(page).getByRole('heading', { name: 'Ambrosia', exact: true }).click();
     await second.reload();
     await selectRegion(second);
-    await expect(details(second).getByLabel('Notes', { exact: true })).toHaveValue(
+    await expect(details(second).getByLabel('Notas', { exact: true })).toHaveValue(
       'Written in the second tab.',
     );
   } finally {
@@ -502,16 +502,16 @@ test('notes saved offline remain available after reconnecting and reloading', as
   await context.setOffline(true);
   try {
     await details(page)
-      .getByLabel('Notes', { exact: true })
+      .getByLabel('Notas', { exact: true })
       .fill('Saved while the connection was unavailable.');
-    await details(page).getByRole('button', { name: 'Save note', exact: true }).click();
-    await expect(details(page).getByRole('button', { name: 'Saved', exact: true })).toBeVisible();
+    await details(page).getByRole('button', { name: 'Salvar nota', exact: true }).click();
+    await expect(details(page).getByRole('button', { name: 'Salvo', exact: true })).toBeVisible();
   } finally {
     await context.setOffline(false);
   }
   await page.reload();
   await selectRegion(page);
-  await expect(details(page).getByLabel('Notes', { exact: true })).toHaveValue(
+  await expect(details(page).getByLabel('Notas', { exact: true })).toHaveValue(
     'Saved while the connection was unavailable.',
   );
 });
@@ -544,9 +544,9 @@ test('3D explorer spawns at the selected Ambrosia position instead of Vice City'
   await expect(page.locator('[data-atlas-arrival-notice]')).toContainText('Ambrosia');
 
   // Native toolbar activation must work while walking shortcuts are active.
-  await page.getByRole('button', { name: 'Evidence', exact: true }).focus();
+  await page.getByRole('button', { name: 'Evidências', exact: true }).focus();
   await page.keyboard.press('Enter');
-  const evidence = page.getByRole('dialog', { name: 'What is known', exact: true });
+  const evidence = page.getByRole('dialog', { name: 'O que se sabe', exact: true });
   await expect(evidence).toBeVisible();
   await expect(evidence.locator('[data-research-discovery]')).toHaveCount(15);
   const keysResearch = evidence.locator('details').filter({
@@ -562,7 +562,7 @@ test('3D explorer spawns at the selected Ambrosia position instead of Vice City'
     'https://www.rockstargames.com/VI/_next/static/media/Leonida_Keys_06.0eapr3hbeyewx.jpg',
   );
   await keysResearch
-    .getByRole('button', { name: 'Explore the region: Leonida Keys', exact: true })
+    .getByRole('button', { name: 'Explorar a região: Leonida Keys', exact: true })
     .focus();
   await page.keyboard.press('Enter');
   await expect(evidence).not.toBeVisible();
@@ -575,7 +575,7 @@ test('3D explorer spawns at the selected Ambrosia position instead of Vice City'
   expect(Math.hypot(researchArrival.x + 9830.96197, researchArrival.z - 6677.24481))
     .toBeLessThan(75);
 
-  await page.getByRole('button', { name: 'Back to atlas', exact: true }).click();
+  await page.getByRole('button', { name: 'Voltar ao mapa', exact: true }).click();
   await selectRegion(page, 'Leonida Keys');
   await page.getByRole('button', { name: '3D explorer', exact: true }).click();
   await expect(world).toHaveAttribute('data-walk-runtime', 'ready', { timeout: 60_000 });
