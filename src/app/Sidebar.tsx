@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { iconForPlace, placeIconStyle } from '../features/map/place-icons';
 import {
   ArrowDown,
   ArrowUp,
@@ -181,7 +182,20 @@ function Results({ places }: { places: Place[] }) {
               key={place.id}
               onClick={() => select(place)}
             >
-              <MapPin size={19} />
+              {(() => {
+                const icon = iconForPlace(place);
+                return icon ? (
+                  <span
+                    className="place-result-icon"
+                    aria-hidden="true"
+                    style={styleFromCss(placeIconStyle(icon, 34, import.meta.env?.BASE_URL ?? '/'))}
+                  />
+                ) : (
+                  <span className={`place-result-icon is-${place.layerId}`} aria-hidden="true">
+                    <MapPin size={18} />
+                  </span>
+                );
+              })()}
               <span>
                 <strong>{place.title || 'Local sem nome'}</strong>
                 <small>
@@ -290,4 +304,16 @@ export function Sidebar({ places }: { places: Place[] }) {
       </footer>
     </aside>
   );
+}
+
+/** Turns a `prop:value;...` declaration list into a React style object. */
+function styleFromCss(css: string): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const part of css.split(';')) {
+    const index = part.indexOf(':');
+    if (index < 0) continue;
+    const key = part.slice(0, index).trim().replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
+    out[key] = part.slice(index + 1).trim();
+  }
+  return out;
 }

@@ -43,12 +43,28 @@ export const PLACE_ICON_ORDER = [
   'carro',
   'oficina',
   'oficina-motos',
+  // Mundo Vice extras (Font Awesome Free glyphs, CC BY 4.0, drawn in the same tile style)
+  'hotel',
+  'residencial',
+  'industria',
+  'natureza',
+  'lazer',
+  'eventos',
+  'governo',
+  'utilidades',
+  'publico',
+  'ponto-turistico',
+  'escritorio',
+  'obra',
+  'igreja',
+  'escola',
+  'local',
 ] as const;
 
 export type PlaceIcon = (typeof PLACE_ICON_ORDER)[number];
 
 export const PLACE_ICON_COLUMNS = 7;
-export const PLACE_ICON_ROWS = 5;
+export const PLACE_ICON_ROWS = 8;
 export const PLACE_ICON_SPRITE = 'assets/mundovice/place-icons.webp';
 
 /** Order matters: the first rule whose pattern matches the place name wins. */
@@ -83,6 +99,9 @@ const NAME_RULES: ReadonlyArray<readonly [PlaceIcon, RegExp]> = [
   ['moda-praia', /swimwear|\bsurf ?shop\b|beachwear/],
   ['roupas', /clothing|apparel|boutique|fashion|\bbinco\b|\bponsonbys\b|\bsuburban\b/],
   ['musica', /\bmusic\b|\brecords\b|recording studio|concert|amphitheat/],
+  ['hotel', /\bhotel\b|\bmotel\b|\binn\b|\bresort\b|\bhostel\b|\blodge\b/],
+  ['igreja', /\bchurch\b|\bchapel\b|\bcathedral\b|\btemple\b/],
+  ['escola', /\bschool\b|\bcollege\b|\buniversity\b|\bacademy\b/],
   ['mercado', /\bmarket\b|grocery|supermarket|\bmart\b|24\/7|\bstore\b|\bshop\b|\bplaza\b|\bmall\b|\boutlet\b/],
 ];
 
@@ -90,6 +109,21 @@ const TAG_RULES: ReadonlyArray<readonly [PlaceIcon, string]> = [
   ['restaurante', 'restaurant'],
   ['casa', 'safehouse'],
   ['mercado', 'retail'],
+  ['hotel', 'hotel'],
+  ['onibus', 'transportation'],
+  ['industria', 'industrial'],
+  ['natureza', 'natural'],
+  ['lazer', 'leisure'],
+  ['eventos', 'events'],
+  ['governo', 'government'],
+  ['utilidades', 'utilities'],
+  ['utilidades', 'infrastructure'],
+  ['publico', 'public'],
+  ['ponto-turistico', 'landmark'],
+  ['escritorio', 'office'],
+  ['obra', 'construction'],
+  ['natureza', 'agriculture'],
+  ['residencial', 'residential'],
 ];
 
 /** The part of a place title before the first comma, e.g. "Taco Bomb" in "Taco Bomb, Kelly County". */
@@ -110,7 +144,8 @@ export function iconForPlace(place: Pick<Place, 'title' | 'tags' | 'layerId'>): 
   for (const [icon, tag] of TAG_RULES) {
     if (place.tags.includes(tag)) return icon;
   }
-  return null;
+  // Every point of interest gets an icon; uncertain places keep their "?" marker.
+  return place.layerId === 'uncertain' ? null : 'local';
 }
 
 /** CSS background for one sprite cell rendered at `size` px. */

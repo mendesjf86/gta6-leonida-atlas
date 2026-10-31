@@ -4,16 +4,16 @@ import { iconForPlace, PLACE_ICON_ORDER, placeIconStyle, placeNameOnly } from '.
 const place = (title: string, tags: string[] = [], layerId = 'community') => ({ title, tags, layerId });
 
 describe('place icons', () => {
-  it('has one sprite cell per icon in a 7 x 5 grid', () => {
-    expect(PLACE_ICON_ORDER).toHaveLength(35);
-    expect(new Set(PLACE_ICON_ORDER).size).toBe(35);
+  it('has one sprite cell per icon in a 7 x 8 grid', () => {
+    expect(PLACE_ICON_ORDER).toHaveLength(50);
+    expect(new Set(PLACE_ICON_ORDER).size).toBe(50);
   });
 
   it('matches by place name, not by district', () => {
     expect(iconForPlace(place('Xero Gas Station, Ambrosia'))).toBe('posto');
     expect(iconForPlace(place('Electric Fang Tattoo, Stockyard, Vice City'))).toBe('tatuagem');
-    expect(iconForPlace(place('?, Leaf Links'))).toBeNull();
-    expect(iconForPlace(place('?, Harborside Ave, Vice Beach'))).toBeNull();
+    expect(iconForPlace(place('?, Leaf Links'))).toBe('local');
+    expect(iconForPlace(place('?, Harborside Ave, Vice Beach'))).toBe('local');
     expect(iconForPlace(place('Vice Beach Marina, Vice Beach'))).toBe('marina');
   });
 
@@ -27,10 +27,12 @@ describe('place icons', () => {
     expect(iconForPlace(place('Autograph Hangar 2, Vice City International Airport'))).toBe('aeroporto');
   });
 
-  it('falls back to source tags and skips regions and personal markers', () => {
+  it('falls back to source tags, then a generic pin, and skips regions, personal and uncertain markers', () => {
     expect(iconForPlace(place('?, Watson Bay', ['restaurant']))).toBe('restaurante');
     expect(iconForPlace(place('?, Vice Beach', ['L1', 'retail']))).toBe('mercado');
-    expect(iconForPlace(place('?, Vice Beach', ['residential']))).toBeNull();
+    expect(iconForPlace(place('?, Vice Beach', ['residential']))).toBe('residencial');
+    expect(iconForPlace(place('Dominion Hotel, Shore Dr, Vice Beach'))).toBe('hotel');
+    expect(iconForPlace(place('?, Vice Beach', [], 'uncertain'))).toBeNull();
     expect(iconForPlace(place('Vice City', [], 'regions'))).toBeNull();
     expect(iconForPlace(place('Gas Station', [], 'personal'))).toBeNull();
   });
@@ -39,7 +41,7 @@ describe('place icons', () => {
     expect(placeNameOnly('Taco Bomb?, Kelly County')).toBe('taco bomb');
     const style = placeIconStyle('posto', 30, '/mapa-interativo/');
     expect(style).toContain('/mapa-interativo/assets/mundovice/place-icons.webp');
-    expect(style).toContain('background-size:210px 150px');
+    expect(style).toContain('background-size:210px 240px');
     expect(style).toContain('background-position:-120px -60px');
   });
 });

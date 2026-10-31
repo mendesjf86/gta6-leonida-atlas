@@ -7,3 +7,7 @@ Source cartography is licensed [Creative Commons Attribution 4.0 International](
 Rebuild: `node scripts/build-leonida-atlas-basemap.mjs`. Uses local pinned tiles and Astro's installed Sharp dependency; no network download. Registration, method, bounds and an input SHA-256 are in `metadata.json`. The SVG contains its raster internally and can be displayed directly with SVG `<image>`.
 
 UNKNOWN margins represent absent geographic source content. Color classification cannot reliably separate all neutral text from roads; residual marks must not be treated as new evidence. The land shading follows source raster colors, not a validated elevation measurement.
+
+## Mundo Vice extra icons
+
+Fifteen extra place icons (hotel, residential, industry, nature, leisure, events, government, utilities, public, landmark, office, construction, church, school, generic pin) use glyphs from Font Awesome Free 6 (https://fontawesome.com), licensed CC BY 4.0, redrawn in the Mundo Vice tile style.

@@ -67,9 +67,9 @@ function markerIcon(
     const tally = new Map<string, number>();
     for (const place of group.places.slice(0, 120)) {
       const found = iconForPlace(place);
-      if (found) tally.set(found, (tally.get(found) ?? 0) + 1);
+      if (found && found !== 'local') tally.set(found, (tally.get(found) ?? 0) + 1);
     }
-    let best: string | null = null;
+    let best: string | null = tally.size ? null : 'local';
     let bestCount = 0;
     for (const [name, count] of tally) if (count > bestCount) [best, bestCount] = [name, count];
     if (best) {
