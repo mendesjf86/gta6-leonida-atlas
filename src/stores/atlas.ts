@@ -135,7 +135,7 @@ export async function hydrateUserData() {
       status: 'error',
       ready: false,
       error:
-        'Local storage is unavailable. Check browser storage permissions, then retry. Your existing data has not been reset.',
+        'O armazenamento local não está disponível. Confira as permissões de armazenamento do navegador e tente de novo. Seus dados não foram apagados.',
     });
   }
 }
@@ -181,7 +181,7 @@ export function switchLocalWorkspace(workspaceId: string | null): Promise<void> 
         usePersistenceStore.setState({
           status: 'error',
           ready: false,
-          error: 'Could not open this workspace. Check browser storage permissions and retry.',
+          error: 'Não foi possível abrir este espaço de trabalho. Confira as permissões de armazenamento do navegador e tente de novo.',
         });
       }
       throw error;
@@ -195,7 +195,7 @@ export function switchLocalWorkspace(workspaceId: string | null): Promise<void> 
 export async function deleteLocalWorkspace(workspaceId: string): Promise<void> {
   const name = workspaceDatabaseName(workspaceId);
   const operation = writeQueue.then(async () => {
-    if (name === atlasRepository.name) throw new Error('Cannot delete an active workspace.');
+    if (name === atlasRepository.name) throw new Error('Não é possível apagar o espaço de trabalho ativo.');
     await new AtlasDatabase(name).delete();
   });
   writeQueue = operation.catch(() => undefined);
@@ -211,7 +211,7 @@ function assertWorkspace(workspaceId: string | null, expectedGeneration: number)
     !usePersistenceStore.getState().ready
   )
     throw new Error(
-      'The active workspace changed or is unavailable. Retry from the current account.',
+      'O espaço de trabalho ativo mudou ou não está disponível. Tente de novo a partir da conta atual.',
     );
 }
 
@@ -238,7 +238,7 @@ export async function importWorkspaceBackup(
   });
   assertWorkspace(workspaceId, expectedGeneration);
   if (!saved)
-    throw new Error(usePersistenceStore.getState().error || 'Could not import the backup.');
+    throw new Error(usePersistenceStore.getState().error || 'Não foi possível importar o backup.');
 }
 
 /** Serialize local writes; publish success only after the transaction and reload complete. */
@@ -271,8 +271,8 @@ export function saveLocal(action: () => Promise<void>): Promise<boolean> {
         status: 'error',
         error:
           error instanceof ConflictError
-            ? 'A newer version exists in another tab or import. Preserve your draft and reload the saved version before editing again.'
-            : 'Could not save to this device. Free storage or check permissions, then retry. Existing data is preserved.',
+            ? 'Existe uma versão mais nova em outra aba ou importação. Guarde seu rascunho e recarregue a versão salva antes de editar de novo.'
+            : 'Não foi possível salvar neste aparelho. Libere espaço ou confira as permissões e tente de novo. Os dados existentes foram preservados.',
       });
       return false;
     }

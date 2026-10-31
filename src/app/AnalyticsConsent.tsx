@@ -26,10 +26,10 @@ function Choices({ consent, beforeChoose }: { consent: string; beforeChoose?: ()
       }}
     >
       <button type="button" aria-pressed={consent === 'denied'} onClick={() => choose('denied')}>
-        {consent === 'denied' ? 'Analytics declined' : 'Decline analytics'}
+        {consent === 'denied' ? 'Estatísticas recusadas' : 'Recusar estatísticas'}
       </button>
       <button type="button" aria-pressed={consent === 'granted'} onClick={() => choose('granted')}>
-        {consent === 'granted' ? 'Analytics allowed' : 'Allow analytics'}
+        {consent === 'granted' ? 'Estatísticas permitidas' : 'Permitir estatísticas'}
       </button>
     </div>
   );
@@ -55,11 +55,11 @@ export function AnalyticsConsent() {
   if (!analyticsAvailable() || consent !== 'unknown') return null;
   return (
     <section ref={notice} className="analytics-notice" aria-labelledby="analytics-notice-title">
-      <h2 id="analytics-notice-title">Help us understand visits</h2>
+      <h2 id="analytics-notice-title">Ajude a gente a entender as visitas</h2>
       <p>
-        Allow Google Analytics to count visits using a random browser ID? Your account, notes,
-        favorites and searches stay out of Analytics. You can change your choice in{' '}
-        <a href={`${projectPath('about')}#analytics-preferences`}>About</a>.
+        Permitir que o Google Analytics conte visitas usando um ID aleatório do navegador? Sua conta,
+        notas, favoritos e buscas ficam fora do Analytics. Você pode mudar sua escolha em{' '}
+        <a href={`${projectPath('about')}#analytics-preferences`}>Sobre</a>.
       </p>
       <Choices
         consent={consent}
@@ -76,16 +76,16 @@ export function AnalyticsPreferences() {
   if (!analyticsAvailable()) return null;
   return (
     <section className="project-section" id="analytics-preferences" tabIndex={-1}>
-      <h2>Audience measurement</h2>
+      <h2>Medição de audiência</h2>
       <p>
-        Google Analytics counts visits and returning browsers only after you allow it. A random
-        browser ID is saved on this device, separately from your Atlas account. Advertising features
-        stay off. Account details, notes, favorites, searches and personal locations are never sent
-        to Analytics.
+        O Google Analytics só conta visitas e navegadores que voltam depois que você permite. Um ID
+        aleatório do navegador fica salvo neste aparelho, separado da sua conta do mapa. Recursos de
+        publicidade ficam desligados. Dados da conta, notas, favoritos, buscas e locais pessoais nunca
+        são enviados ao Analytics.
       </p>
       <p>
-        Declining stops measurement and removes the saved measurement ID. Your Atlas data and
-        account remain available.
+        Recusar interrompe a medição e apaga o ID de medição salvo. Seus dados e sua conta do mapa
+        continuam disponíveis.
       </p>
       <Choices consent={consent} />
     </section>

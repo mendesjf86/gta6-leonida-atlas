@@ -27,10 +27,11 @@ describe('Leonida Atlas release history', () => {
       createElement(ProjectPage, { page: 'changelog', onClose: () => undefined }),
     );
     const documentation = await readFile(new URL('../../RELEASES.md', import.meta.url), 'utf8');
+    expect(markup).toContain('Publicada');
+    expect(documentation).toContain('Released');
     for (const output of [markup, documentation]) {
       for (const version of ['v0.8.0', 'v0.7.0', 'v0.6.2', 'v0.6.1', 'v0.6.0', 'v0.5.0'])
         expect(output).toContain(version);
-      expect(output).toContain('Released');
       expect(output).not.toMatch(/\bv0\.[1-4]\.\d+\b/);
       expect(output).not.toContain('local candidate; not pushed');
     }
@@ -41,7 +42,7 @@ describe('Leonida Atlas release history', () => {
     const markup = renderToStaticMarkup(
       createElement(ProjectPage, { page: 'about', onClose: () => undefined }),
     );
-    expect(markup).toContain('Release history');
+    expect(markup).toContain('Histórico de versões');
     for (const release of LEONIDA_ATLAS_RELEASES) {
       expect(markup).toContain(
         `https://github.com/navanem/gta6-leonida-atlas/releases/tag/${release.version}`,
@@ -49,22 +50,25 @@ describe('Leonida Atlas release history', () => {
       expect(markup).toContain(release.title);
       expect(markup).toContain(release.summary);
     }
-    expect(markup.match(/>Current</g)).toHaveLength(1);
-    expect(markup).toContain('Full changelog');
+    expect(markup.match(/>Atual</g)).toHaveLength(1);
+    expect(markup).toContain('Ver todas as notas de versão');
+    expect(markup).toContain('https://github.com/navanem/gta6-leonida-atlas');
+    expect(markup).toContain('https://github.com/mendesjf86/gta6-leonida-atlas');
+    expect(markup).toContain('AGPL-3.0');
   });
 
   it('retains source uncertainty and the limits of the executed browser verification', () => {
     const notes = LEONIDA_ATLAS_RELEASES.flatMap((release) => release.highlights).join(' ');
-    expect(notes).toContain('APPROXIMATE');
-    expect(notes).toContain('UNKNOWN');
+    expect(notes).toContain('APROXIMAD');
+    expect(notes).toContain('DESCONHECID');
     expect(notes).toContain('GTADB');
     expect(notes).toContain('CC BY 4.0');
-    expect(notes).toContain('107 unpositioned');
+    expect(notes).toContain('107 sem posição');
     const verification = LEONIDA_ATLAS_RELEASES.flatMap((release) => release.verification).join(
       ' ',
     );
     expect(verification).toContain('Chromium');
     expect(verification).toContain('WebKit');
-    expect(verification).toContain('explicitly skipped');
+    expect(verification).toContain('explicitamente ignorad');
   });
 });

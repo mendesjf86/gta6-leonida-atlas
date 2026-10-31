@@ -142,8 +142,8 @@ describe('isolated optional account workspaces', () => {
     const id = account();
     await switchLocalWorkspace(id);
     await saveLocal(() => atlasRepository.saveNote('L1', 'Account deleted'));
-    await expect(deleteLocalWorkspace(id)).rejects.toThrow(/active/i);
-    await expect(deleteLocalWorkspace('')).rejects.toThrow(/workspace/i);
+    await expect(deleteLocalWorkspace(id)).rejects.toThrow(/active|ativo/i);
+    await expect(deleteLocalWorkspace('')).rejects.toThrow(/workspace|espaço de trabalho/i);
     await switchLocalWorkspace(null);
     await deleteLocalWorkspace(id);
     await switchLocalWorkspace(id);
@@ -167,11 +167,11 @@ describe('isolated optional account workspaces', () => {
     await Promise.resolve();
     await Promise.resolve();
     await switchLocalWorkspace(null);
-    const rejected = expect(exported).rejects.toThrow(/workspace/i);
+    const rejected = expect(exported).rejects.toThrow(/workspace|espaço de trabalho/i);
     delayed.release();
     await rejected;
-    await expect(exportWorkspaceBackup(id)).rejects.toThrow(/workspace/i);
-    await expect(importWorkspaceBackup(id, backup)).rejects.toThrow(/workspace/i);
+    await expect(exportWorkspaceBackup(id)).rejects.toThrow(/workspace|espaço de trabalho/i);
+    await expect(importWorkspaceBackup(id, backup)).rejects.toThrow(/workspace|espaço de trabalho/i);
     expect(useUserStore.getState().notes).toEqual([]);
   });
 

@@ -11,6 +11,10 @@ import {
 } from '../../stores/atlas';
 import { Modal } from '../../app/Modal';
 
+function count(value: number, singular: string, plural: string): string {
+  return `${value.toLocaleString('pt-BR')} ${value === 1 ? singular : plural}`;
+}
+
 export default function BackupDialog({ onClose }: { onClose: () => void }) {
   const ready = usePersistenceStore((s) => s.ready);
   const workspaceId = useWorkspaceStore((s) => s.workspaceId);
@@ -28,9 +32,9 @@ export default function BackupDialog({ onClose }: { onClose: () => void }) {
       anchor.download = `leonida-atlas-backup-${new Date().toISOString().slice(0, 10)}.json`;
       anchor.click();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
-      setMessage('Backup downloaded. Store it somewhere safe.');
+      setMessage('Backup baixado. Guarde em um lugar seguro.');
     } catch {
-      setError('Could not read local data for export. Retry after checking storage.');
+      setError('Não foi possível ler os dados locais para exportar. Confira o armazenamento e tente de novo.');
     }
   }
   async function inspect(file: File | undefined) {
@@ -39,14 +43,14 @@ export default function BackupDialog({ onClose }: { onClose: () => void }) {
     setMessage('');
     if (!file) return;
     if (file.size > MAX_BACKUP_BYTES) {
-      setError('This file exceeds the 10 MB backup limit.');
+      setError('Este arquivo passa do limite de 10 MB para backups.');
       return;
     }
     try {
       setPreview(parseBackup(JSON.parse(await file.text())));
     } catch (error) {
       setError(
-        error instanceof Error ? error.message : 'Invalid backup file. No data was changed.',
+        error instanceof Error ? error.message : 'Arquivo de backup inválido. Nenhum dado foi alterado.',
       );
     }
   }
@@ -57,22 +61,22 @@ export default function BackupDialog({ onClose }: { onClose: () => void }) {
     setBusy(false);
     if (ok) {
       setPreview(null);
-      setMessage('Backup merged. Your local data is saved.');
-    } else setError('Import failed. Existing data is preserved. Retry after checking storage.');
+      setMessage('Backup mesclado. Seus dados locais estão salvos.');
+    } else setError('A importação falhou. Os dados existentes foram preservados. Confira o armazenamento e tente de novo.');
   }
   return (
-    <Modal title="Your local backup" onClose={onClose}>
+    <Modal title="Seu backup local" onClose={onClose}>
       <p className="panel-intro">
-        Export your favorites, collections, notes, markers and preferences. No account is needed.
+        Exporte seus favoritos, coleções, notas, marcadores e preferências. Não precisa de conta.
       </p>
       <button className="button primary" disabled={!ready} onClick={() => void exportData()}>
         <Download size={18} />
-        Export backup
+        Exportar backup
       </button>
       <section className="detail-section">
         <label className="file-label" htmlFor="backup-file">
           <Upload size={18} />
-          Import a backup
+          Importar um backup
         </label>
         <input
           id="backup-file"
@@ -82,25 +86,27 @@ export default function BackupDialog({ onClose }: { onClose: () => void }) {
           onChange={(e) => void inspect(e.target.files?.[0])}
         />
         <p className="help-text">
-          Versioned JSON · up to 10 MB. Review the contents before merging. Existing entries are
-          kept; newer matching entries are updated.
+          JSON com versão · até 10 MB. Confira o conteúdo antes de mesclar. Os itens existentes são
+          mantidos, e os itens correspondentes mais novos são atualizados.
         </p>
       </section>
       {preview && (
-        <section className="backup-preview" aria-label="Backup preview">
-          <h3>Ready to merge</h3>
+        <section className="backup-preview" aria-label="Prévia do backup">
+          <h3>Pronto para mesclar</h3>
           <p>
-            {preview.favorites.length} favorites · {preview.collections.length} collections ·{' '}
-            {preview.notes.length} notes · {preview.markers.length} markers
+            {count(preview.favorites.length, 'favorito', 'favoritos')} ·{' '}
+            {count(preview.collections.length, 'coleção', 'coleções')} ·{' '}
+            {count(preview.notes.length, 'nota', 'notas')} ·{' '}
+            {count(preview.markers.length, 'marcador', 'marcadores')}
           </p>
           <p className="help-text">
-            Imported display preferences will replace current preferences.
+            As preferências de exibição importadas vão substituir as atuais.
           </p>
           <button className="button primary" disabled={busy} onClick={() => void merge()}>
-            {busy ? 'Importing…' : 'Merge backup'}
+            {busy ? 'Importando…' : 'Mesclar backup'}
           </button>
           <button className="text-button" onClick={() => setPreview(null)}>
-            Cancel import
+            Cancelar importação
           </button>
         </section>
       )}

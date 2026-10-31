@@ -22,7 +22,7 @@ export const BACKUP_LIMITS = Object.freeze({
 
 export class BackupValidationError extends Error {
   constructor(message: string) {
-    super(`Invalid Atlas backup: ${message}`);
+    super(`Backup inválido: ${message}`);
     this.name = 'BackupValidationError';
   }
 }
@@ -33,21 +33,21 @@ function invalid(path: string, requirement: string): never {
 
 function record(input: unknown, path: string): Record<string, unknown> {
   if (input === null || typeof input !== 'object' || Array.isArray(input))
-    invalid(path, 'must be an object');
+    invalid(path, 'precisa ser um objeto');
   return input as Record<string, unknown>;
 }
 
 function list(input: unknown, path: string): unknown[] {
-  if (!Array.isArray(input)) invalid(path, 'must be an array');
+  if (!Array.isArray(input)) invalid(path, 'precisa ser uma lista');
   if (input.length > BACKUP_LIMITS.items)
-    invalid(path, `exceeds the limit of ${BACKUP_LIMITS.items} items`);
+    invalid(path, `passa do limite de ${BACKUP_LIMITS.items.toLocaleString('pt-BR')} itens`);
   return input;
 }
 
 export function parseText(input: unknown, path: string, max: number, required = false): string {
-  if (typeof input !== 'string') invalid(path, 'must be text');
-  if (input.length > max) invalid(path, `exceeds the limit of ${max} characters`);
-  if (required && !input.trim()) invalid(path, 'must not be empty');
+  if (typeof input !== 'string') invalid(path, 'precisa ser texto');
+  if (input.length > max) invalid(path, `passa do limite de ${max.toLocaleString('pt-BR')} caracteres`);
+  if (required && !input.trim()) invalid(path, 'não pode ficar vazio');
   return input;
 }
 
@@ -59,11 +59,11 @@ export function parseId(input: unknown, path = 'id', personal = false): string {
   ) {
     invalid(
       path,
-      'must be a safe identifier using letters, numbers, colons, underscores or hyphens',
+      'precisa ser um identificador seguro, só com letras, números, dois-pontos, sublinhados ou hífens',
     );
   }
   if ((personal || id.startsWith('custom:')) && !/^custom:[a-zA-Z0-9][a-zA-Z0-9:_-]*$/.test(id)) {
-    invalid(path, 'must start with custom: followed by a safe identifier');
+    invalid(path, 'precisa começar com custom: seguido de um identificador seguro');
   }
   return id;
 }
@@ -73,13 +73,13 @@ function timestamp(input: unknown, path: string): string {
     typeof input !== 'string' ||
     !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/.test(input)
   ) {
-    invalid(path, 'must be an ISO UTC timestamp');
+    invalid(path, 'precisa ser uma data e hora ISO em UTC');
   }
   const milliseconds = Date.parse(input);
-  if (!Number.isFinite(milliseconds)) invalid(path, 'must be a valid timestamp');
+  if (!Number.isFinite(milliseconds)) invalid(path, 'precisa ser uma data e hora válida');
   const normalized = new Date(milliseconds).toISOString();
   if (normalized.slice(0, 19) !== input.slice(0, 19))
-    invalid(path, 'must be a valid calendar date');
+    invalid(path, 'precisa ser uma data válida no calendário');
   return normalized;
 }
 
@@ -87,7 +87,7 @@ function unique<T>(items: T[], key: (item: T) => string, path: string): T[] {
   const seen = new Set<string>();
   for (const item of items) {
     const id = key(item);
-    if (seen.has(id)) invalid(path, `contains duplicate id ${id}`);
+    if (seen.has(id)) invalid(path, `tem o id duplicado ${id}`);
     seen.add(id);
   }
   return items;
@@ -97,7 +97,7 @@ export function parsePreferences(input: unknown, legacy = false): Preferences {
   const item = record(input === undefined && legacy ? {} : input, 'preferences');
   const boolean = (key: keyof Preferences): boolean => {
     const value = item[key] === undefined && legacy ? DEFAULT_PREFERENCES[key] : item[key];
-    if (typeof value !== 'boolean') invalid(`preferences.${key}`, 'must be a boolean');
+    if (typeof value !== 'boolean') invalid(`preferences.${key}`, 'precisa ser verdadeiro ou falso');
     return value;
   };
   return {
@@ -119,7 +119,7 @@ export function parsePersonalMarker(
     if (typeof value !== 'number' || !Number.isFinite(value) || value < min || value > max) {
       invalid(
         `${path}.position.${axis}`,
-        `must be a finite coordinate within map bounds [${min}, ${max}]`,
+        `precisa ser uma coordenada finita dentro dos limites do mapa [${min}, ${max}]`,
       );
     }
     return value;
@@ -130,10 +130,10 @@ export function parsePersonalMarker(
       category as string,
     )
   )
-    invalid(`${path}.category`, 'is unsupported');
+    invalid(`${path}.category`, 'não é suportado');
   const icon = item.icon === undefined && legacyTime ? 'pin' : item.icon;
   if (icon !== 'pin' && icon !== 'star' && icon !== 'flag')
-    invalid(`${path}.icon`, 'is unsupported');
+    invalid(`${path}.icon`, 'não é suportado');
   const createdAt = timestamp(
     item.createdAt === undefined ? legacyTime : item.createdAt,
     `${path}.createdAt`,
@@ -191,9 +191,9 @@ export function parseCollection(
 /** Returns a new, whitelisted value. Never mutates input or touches browser storage. */
 export function parseBackup(input: unknown): Backup {
   const data = record(input, 'backup');
-  if (data.format !== 'leonida-atlas') invalid('format', 'must be leonida-atlas');
+  if (data.format !== 'leonida-atlas') invalid('format', 'precisa ser leonida-atlas');
   if (data.version !== 1 && data.version !== 2)
-    invalid('version', 'is unsupported (supported versions: 1 and 2)');
+    invalid('version', 'não é suportada (versões suportadas: 1 e 2)');
   const exportedAt = timestamp(data.exportedAt, 'exportedAt');
   const legacyTime = data.version === 1 ? exportedAt : undefined;
   const markers = unique(
@@ -245,7 +245,7 @@ export function parseBackup(input: unknown): Backup {
   const markerIds = new Set(markers.map((item) => item.id));
   const checkReference = (id: string) => {
     if (id.startsWith('custom:') && !markerIds.has(id))
-      invalid('references', `contains missing personal marker ${id}`);
+      invalid('references', `tem o marcador pessoal ${id}, que não existe`);
   };
   for (const item of favorites) checkReference(item.placeId);
   for (const item of notes) checkReference(item.placeId);
@@ -262,6 +262,6 @@ export function parseBackup(input: unknown): Backup {
   };
   // Count only whitelisted data: ignored keys cannot become stored executable content.
   if (new TextEncoder().encode(JSON.stringify(result)).byteLength > MAX_BACKUP_BYTES)
-    invalid('backup', 'exceeds the 10 MiB data limit');
+    invalid('backup', 'passa do limite de 10 MiB de dados');
   return result;
 }

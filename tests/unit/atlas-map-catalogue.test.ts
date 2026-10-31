@@ -25,7 +25,7 @@ describe('Atlas searchable catalogue', () => {
   });
   it('rejects malformed or duplicate source records instead of manufacturing empty data', () => {
     expect(() => catalogueFromSnapshot({ landmarks: null })).toThrow();
-    expect(() => catalogueFromSnapshot({ ...snapshot, landmarks: [snapshot.landmarks[0], snapshot.landmarks[0]] })).toThrow(/duplicate/i);
+    expect(() => catalogueFromSnapshot({ ...snapshot, landmarks: [snapshot.landmarks[0], snapshot.landmarks[0]] })).toThrow(/duplicate|duplicad/i);
     expect(() => catalogueFromSnapshot({ ...snapshot, landmarks: [{ ...snapshot.landmarks[0], inGameCoordinates: [0, Infinity] }] })).toThrow();
   });
   it('maps personal markers to their own selectable layer without changing persisted identity', () => {

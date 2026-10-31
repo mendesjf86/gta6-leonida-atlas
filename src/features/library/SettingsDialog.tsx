@@ -8,24 +8,24 @@ export default function SettingsDialog({ onClose }: { onClose: () => void }) {
   const ready = usePersistenceStore((s) => s.ready);
   const [storageMessage, setStorageMessage] = useState('');
   return (
-    <Modal title="Atlas settings" onClose={onClose}>
+    <Modal title="Ajustes do mapa" onClose={onClose}>
       <div className="settings-list">
         {(
           [
             {
               key: 'showLabels',
-              title: 'Map labels',
-              description: 'Show place names when zoomed in.',
+              title: 'Nomes no mapa',
+              description: 'Mostrar o nome dos locais quando o zoom estiver próximo.',
             },
             {
               key: 'clusterMarkers',
-              title: 'Group nearby markers',
-              description: 'Cluster points to keep dense areas readable.',
+              title: 'Agrupar marcadores próximos',
+              description: 'Juntar pontos para deixar as áreas cheias mais fáceis de ler.',
             },
             {
               key: 'reducedMotion',
-              title: 'Reduce motion',
-              description: 'Use immediate map movements and quiet transitions.',
+              title: 'Reduzir movimento',
+              description: 'Mover o mapa sem animação e com transições mais discretas.',
             },
           ] as const
         ).map((option) => (
@@ -52,11 +52,11 @@ export default function SettingsDialog({ onClose }: { onClose: () => void }) {
         ))}
       </div>
       <section className="detail-section">
-        <h3>Storage on this device</h3>
+        <h3>Armazenamento neste aparelho</h3>
         <p className="help-text">
-          Your browser stores personal data in IndexedDB. Backups protect your work if browser data
-          is cleared. The map and app can reopen offline after the first complete load; 3D textures
-          are cached as you explore.
+          Seu navegador guarda os dados pessoais no IndexedDB. Os backups protegem seu trabalho se os
+          dados do navegador forem apagados. O mapa e o app abrem offline depois do primeiro
+          carregamento completo, e as texturas 3D ficam em cache conforme você explora.
         </p>
         <button
           className="button"
@@ -65,12 +65,12 @@ export default function SettingsDialog({ onClose }: { onClose: () => void }) {
             const persisted = await atlasRepository.requestPersistence();
             setStorageMessage(
               persisted
-                ? 'Persistent storage is enabled.'
-                : 'Your browser did not grant persistent storage. Local saves still work; keep an exported backup.',
+                ? 'O armazenamento persistente está ativado.'
+                : 'Seu navegador não liberou o armazenamento persistente. Salvar localmente continua funcionando, mas guarde um backup exportado.',
             );
           }}
         >
-          Protect local storage
+          Proteger armazenamento local
         </button>
         {storageMessage && (
           <p role="status" className="help-text">
@@ -79,11 +79,11 @@ export default function SettingsDialog({ onClose }: { onClose: () => void }) {
         )}
       </section>
       <section className="detail-section">
-        <h3>Keyboard</h3>
+        <h3>Teclado</h3>
         <p className="help-text">
-          / to search · Escape to close the selected place or cancel placement · arrow keys to pan
-          the focused map · + / − to zoom. Use the marker coordinate form to place a point without a
-          mouse.
+          / para buscar · Esc para fechar o local selecionado ou cancelar o posicionamento · setas para
+          mover o mapa em foco · + / − para dar zoom. Use o formulário de coordenadas do marcador para
+          posicionar um ponto sem mouse.
         </p>
       </section>
     </Modal>

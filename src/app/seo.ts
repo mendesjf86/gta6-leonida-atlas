@@ -4,47 +4,47 @@ export const ATLAS_PROJECT_META: Record<
   { title: string; heading: string; description: string }
 > = {
   about: {
-    title: "About GTA 6 Leonida Atlas: Evidence, Methods & Project",
-    heading: "About the GTA 6 Leonida Atlas",
+    title: "Sobre o projeto: fontes e métodos | Mapa de Leonida · Mundo Vice",
+    heading: "Sobre o Mapa de Leonida",
     description:
-      "Understand the independent Leonida Atlas project, its approximate community geography, local data and public source release history.",
+      "Conheça o Mapa de Leonida do Mundo Vice, sua geografia aproximada feita pela comunidade, os dados locais e o histórico público de versões.",
   },
   documentation: {
-    title: "GTA 6 Map Guide: Yanis v16, Sources & Atlas Controls",
-    heading: "How to Use the GTA 6 Leonida Atlas",
+    title: "Guia do mapa de GTA 6: Yanis v16, fontes e controles | Mapa de Leonida · Mundo Vice",
+    heading: "Como usar o Mapa de Leonida",
     description:
-      "Learn how to explore the Leonida Atlas, use the Yanis v16 basemap and distinguish confirmed evidence from approximate community mapping.",
+      "Aprenda a explorar o Mapa de Leonida, usar o mapa base Yanis v16 e diferenciar informações confirmadas do mapeamento aproximado da comunidade.",
   },
   credits: {
-    title: "Leonida Atlas Credits: Yanis v16, GTADB & Map Sources",
-    heading: "Yanis v16 and Leonida Atlas Credits",
+    title: "Créditos: Yanis v16, GTADB e fontes do mapa | Mapa de Leonida · Mundo Vice",
+    heading: "Créditos do Yanis v16 e do Mapa de Leonida",
     description:
-      "Find the Yanis v16 and GTADB map attribution, pinned landmark sources, Rockstar references and rights notices behind the Leonida Atlas.",
+      "Veja a atribuição do Yanis v16 e do GTADB, as fontes dos pontos de referência, as referências da Rockstar e os avisos de direitos do Mapa de Leonida.",
   },
   contributing: {
-    title: "Contribute to Leonida Atlas: Evidence & Source Corrections",
-    heading: "Contributing to the Leonida Atlas",
+    title: "Como contribuir: fontes e correções | Mapa de Leonida · Mundo Vice",
+    heading: "Como contribuir com o Mapa de Leonida",
     description:
-      "Learn how to contribute reproducible evidence, report mapping corrections and improve the independent Leonida Atlas while preserving source attribution.",
+      "Saiba como enviar fontes verificáveis, apontar correções no mapeamento e melhorar o Mapa de Leonida mantendo a atribuição das fontes.",
   },
   changelog: {
-    title: "Leonida Atlas Changelog: Public Release History",
-    heading: "Leonida Atlas Release History",
+    title: "Novidades: histórico público de versões | Mapa de Leonida · Mundo Vice",
+    heading: "Histórico de versões do Mapa de Leonida",
     description:
-      "Read the public Leonida Atlas release history, including changes to community cartography, the optional 3D explorer and local map tools.",
+      "Leia o histórico público de versões do Mapa de Leonida, com mudanças na cartografia da comunidade, no explorador 3D opcional e nas ferramentas locais.",
   },
   licenses: {
-    title: "Leonida Atlas Licenses: Code, Cartography & Asset Rights",
-    heading: "Leonida Atlas Code and Content Licenses",
+    title: "Licenças: código, cartografia e direitos de conteúdo | Mapa de Leonida · Mundo Vice",
+    heading: "Licenças de código e conteúdo do Mapa de Leonida",
     description:
-      "Review the Leonida Atlas AGPL code license, GTADB cartography attribution and separate rights for Rockstar references and other third-party assets.",
+      "Confira a licença AGPL do código, a atribuição da cartografia do GTADB e os direitos separados das referências da Rockstar e de outros conteúdos de terceiros.",
   },
 };
 export const ATLAS_ENTRY_META = {
-  title: "GTA 6 Leonida Atlas: Interactive Community Map",
-  heading: "GTA 6 Leonida Atlas",
+  title: "Mapa interativo de GTA 6 | Mapa de Leonida · Mundo Vice",
+  heading: "Mapa de Leonida",
   description:
-    "Explore an approximate community map of Leonida, inspect cited location evidence and keep personal favorites, notes and collections in your browser.",
+    "Explore um mapa aproximado de Leonida feito pela comunidade, confira as fontes de cada local e guarde favoritos, notas e coleções no seu navegador.",
 };
 export function atlasPageMeta(
   pathname: string,

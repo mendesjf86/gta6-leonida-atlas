@@ -39,7 +39,7 @@ export default function MarkerEditor({
       coords.y < -8000 ||
       coords.y > 12000
     ) {
-      setError('Enter a title and coordinates within the map: X −16000 to 4000; Y −8000 to 12000.');
+      setError('Informe um título e coordenadas dentro do mapa: X de −16.000 a 4.000; Y de −8.000 a 12.000.');
       return;
     }
     const now = new Date().toISOString();
@@ -71,8 +71,8 @@ export default function MarkerEditor({
     } else
       setError(
         conflict
-          ? 'This marker changed elsewhere. Copy your draft, close this form and reopen the current marker before saving again.'
-          : 'Marker could not be saved. Your draft is still here; retry after fixing local storage.',
+          ? 'Este marcador mudou em outro lugar. Copie seu rascunho, feche este formulário e abra o marcador atual antes de salvar de novo.'
+          : 'Não foi possível salvar o marcador. Seu rascunho continua aqui; tente de novo depois de resolver o armazenamento local.',
       );
   }
   async function remove() {
@@ -86,7 +86,7 @@ export default function MarkerEditor({
     }
   }
   return (
-    <Modal title={marker ? 'Edit personal marker' : 'New personal marker'} onClose={onClose}>
+    <Modal title={marker ? 'Editar marcador pessoal' : 'Novo marcador pessoal'} onClose={onClose}>
       <form
         className="editor-form"
         onSubmit={(e) => {
@@ -95,9 +95,9 @@ export default function MarkerEditor({
         }}
       >
         <p className="panel-intro">
-          This marker is yours. It is stored locally and does not change the public map.
+          Este marcador é só seu. Ele fica salvo neste aparelho e não muda o mapa público.
         </p>
-        <label htmlFor="marker-title">Title</label>
+        <label htmlFor="marker-title">Título</label>
         <input
           id="marker-title"
           value={title}
@@ -106,7 +106,7 @@ export default function MarkerEditor({
           onChange={(e) => setTitle(e.target.value)}
           autoFocus
         />
-        <label htmlFor="marker-description">Description</label>
+        <label htmlFor="marker-description">Descrição</label>
         <textarea
           id="marker-description"
           value={description}
@@ -116,7 +116,7 @@ export default function MarkerEditor({
         />
         <div className="form-grid">
           <div>
-            <label htmlFor="marker-category">Category</label>
+            <label htmlFor="marker-category">Categoria</label>
             <select
               id="marker-category"
               value={category}
@@ -130,21 +130,21 @@ export default function MarkerEditor({
             </select>
           </div>
           <div>
-            <label htmlFor="marker-icon">Icon</label>
+            <label htmlFor="marker-icon">Ícone</label>
             <select
               id="marker-icon"
               value={icon}
               onChange={(e) => setIcon(e.target.value as PersonalMarker['icon'])}
             >
-              <option value="pin">Pin</option>
-              <option value="star">Star</option>
-              <option value="flag">Flag</option>
+              <option value="pin">Alfinete</option>
+              <option value="star">Estrela</option>
+              <option value="flag">Bandeira</option>
             </select>
           </div>
         </div>
         <div className="form-grid">
           <div>
-            <label htmlFor="marker-x">Game X</label>
+            <label htmlFor="marker-x">X no jogo</label>
             <input
               id="marker-x"
               type="number"
@@ -157,7 +157,7 @@ export default function MarkerEditor({
             />
           </div>
           <div>
-            <label htmlFor="marker-y">Game Y</label>
+            <label htmlFor="marker-y">Y no jogo</label>
             <input
               id="marker-y"
               type="number"
@@ -177,22 +177,22 @@ export default function MarkerEditor({
         )}
         <div className="button-row">
           <button type="submit" className="button primary" disabled={busy}>
-            {busy ? 'Saving…' : 'Save marker'}
+            {busy ? 'Salvando…' : 'Salvar marcador'}
           </button>
           <button type="button" className="button" onClick={onClose}>
-            Cancel
+            Cancelar
           </button>
         </div>
         {marker && !deleting && (
           <button type="button" className="text-button danger" onClick={() => setDeleting(true)}>
-            Delete marker
+            Apagar marcador
           </button>
         )}
         {deleting && (
           <div className="delete-confirm">
             <p>
-              Delete this marker and its note? It will also be removed from favorites and
-              collections.
+              Apagar este marcador e a nota dele? Ele também sai dos favoritos e das
+              coleções.
             </p>
             <button
               type="button"
@@ -200,7 +200,7 @@ export default function MarkerEditor({
               disabled={busy}
               onClick={() => void remove()}
             >
-              Confirm deletion
+              Confirmar exclusão
             </button>
           </div>
         )}

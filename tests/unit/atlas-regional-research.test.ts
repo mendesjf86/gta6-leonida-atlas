@@ -63,8 +63,8 @@ describe("regional source discoveries", () => {
       createElement(RegionalResearch, { region: "leonida-keys" }),
     );
     expect(html).toContain("Leonida Keys");
-    expect(html).toContain("Exact locations are not established");
-    expect(html).toContain("Official image");
+    expect(html).toContain("Estas fontes não definem a localização exata");
+    expect(html).toContain("Imagem oficial");
     expect(html).toContain(
       "https://www.rockstargames.com/VI/_next/static/media/Leonida_Keys_06.0eapr3hbeyewx.jpg",
     );
@@ -101,7 +101,7 @@ describe("regional source discoveries", () => {
       "port-gellhorn",
       "vice-city",
     ]);
-    expect(evidence).toContain("Explore the region");
+    expect(evidence).toContain("Explorar a região");
     expect(evidence).not.toContain("data-walk-map-marker");
   });
 

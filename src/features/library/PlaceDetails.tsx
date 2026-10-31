@@ -12,6 +12,10 @@ import {
 import { finishNoteSave, reconcileNoteDraft, type NoteDraft } from './note-draft';
 import { getResearchForPlace } from '../street-leonida/leonida-research';
 import RegionalResearch from './RegionalResearch';
+import { categoryName } from '../../app/Sidebar';
+
+const coordinate = (value: number) =>
+  value.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
 export default function PlaceDetails({ place }: { place: Place }) {
   const favorite = useUserStore((s) => s.favorites.some((f) => f.placeId === place.id));
@@ -82,12 +86,12 @@ export default function PlaceDetails({ place }: { place: Place }) {
     }
   }
   return (
-    <aside className="detail-panel" aria-label="Place details">
+    <aside className="detail-panel" aria-label="Detalhes do local">
       <header className="panel-heading">
-        <span className="eyebrow">{isPersonal ? 'PERSONAL PLACE' : 'PLACE DETAILS'}</span>
+        <span className="eyebrow">{isPersonal ? 'LOCAL PESSOAL' : 'DETALHES DO LOCAL'}</span>
         <button
           className="icon-button"
-          aria-label="Close place details"
+          aria-label="Fechar detalhes do local"
           onClick={() => useMapStore.getState().select(null)}
         >
           <X size={20} />
@@ -100,12 +104,12 @@ export default function PlaceDetails({ place }: { place: Place }) {
         </div>
         <p className="evidence-label">
           {isPersonal
-            ? 'Personal marker · on this device'
+            ? 'Marcador pessoal · neste aparelho'
             : !place.position
-              ? 'No mapped position'
+              ? 'Sem posição no mapa'
               : place.evidence === 'uncertain'
-                ? 'Uncertain entry · approximate placement'
-                : 'Community placement · approximate'}
+                ? 'Local incerto · posição aproximada'
+                : 'Posição da comunidade · aproximada'}
         </p>
         <button
           disabled={!ready}
@@ -113,25 +117,25 @@ export default function PlaceDetails({ place }: { place: Place }) {
           onClick={() => void saveLocal(() => atlasRepository.toggleFavorite(place.id))}
         >
           <Star size={18} fill={favorite ? 'currentColor' : 'none'} />
-          {favorite ? 'Saved to favorites' : 'Add to favorites'}
+          {favorite ? 'Salvo nos favoritos' : 'Adicionar aos favoritos'}
         </button>
         {place.description && <p className="description">{place.description}</p>}
         <dl className="place-meta">
           <div>
-            <dt>Category</dt>
-            <dd>{place.category}</dd>
+            <dt>Categoria</dt>
+            <dd>{categoryName(place.category)}</dd>
           </div>
           {place.region && (
             <div>
-              <dt>Region</dt>
+              <dt>Região</dt>
               <dd>{place.region}</dd>
             </div>
           )}
           {place.position && (
             <div>
-              <dt>Game coordinates</dt>
+              <dt>Coordenadas no jogo</dt>
               <dd>
-                {place.position.x.toFixed(1)}, {place.position.y.toFixed(1)}
+                {coordinate(place.position.x)}; {coordinate(place.position.y)}
               </dd>
             </div>
           )}
@@ -145,14 +149,14 @@ export default function PlaceDetails({ place }: { place: Place }) {
         )}
         {research && <RegionalResearch region={research.region.slug} />}
         <section className="detail-section">
-          <label htmlFor="place-note">Notes</label>
+          <label htmlFor="place-note">Notas</label>
           <textarea
             id="place-note"
             rows={5}
             maxLength={100000}
             value={draft.text}
             disabled={!ready}
-            placeholder="Add notes about this place…"
+            placeholder="Adicione notas sobre este local…"
             onChange={(e) => {
               const text = e.currentTarget.value;
               setDraft((current) => ({ ...current, text, dirty: true }));
@@ -163,28 +167,28 @@ export default function PlaceDetails({ place }: { place: Place }) {
             }}
           />
           <div className="row-between">
-            <small>{draft.text.length.toLocaleString()} / 100,000</small>
+            <small>{draft.text.length.toLocaleString('pt-BR')} / 100.000</small>
             <button
               className="text-button"
               disabled={!ready || noteBusy || draft.conflict}
               onClick={() => void saveNote()}
             >
               {noteBusy ? (
-                'Saving…'
+                'Salvando…'
               ) : noteSaved ? (
                 <>
                   <Check size={14} />
-                  Saved
+                  Salvo
                 </>
               ) : (
-                'Save note'
+                'Salvar nota'
               )}
             </button>
           </div>
           {draft.conflict && (
             <div className="inline-error" role="alert">
-              This note changed elsewhere or could not be saved. Your draft is preserved here. Copy
-              it before loading the latest saved note.
+              Esta nota mudou em outro lugar ou não pôde ser salva. Seu rascunho continua aqui. Copie
+              o texto antes de carregar a última nota salva.
               <button
                 className="text-button"
                 onClick={() => {
@@ -197,13 +201,13 @@ export default function PlaceDetails({ place }: { place: Place }) {
                   setNoteSaved(false);
                 }}
               >
-                Load saved note
+                Carregar nota salva
               </button>
             </div>
           )}
         </section>
         <section className="detail-section">
-          <label htmlFor="place-collection">Add to collection</label>
+          <label htmlFor="place-collection">Adicionar a uma coleção</label>
           <select
             id="place-collection"
             disabled={!ready || collections.length === 0}
@@ -211,7 +215,7 @@ export default function PlaceDetails({ place }: { place: Place }) {
             onChange={(e) => void addToCollection(e.target.value)}
           >
             <option value="">
-              {collections.length ? 'Select a collection…' : 'Create a collection in Saved'}
+              {collections.length ? 'Escolha uma coleção…' : 'Crie uma coleção em Salvos'}
             </option>
             {collections.map((c) => (
               <option key={c.id} value={c.id}>
@@ -227,7 +231,7 @@ export default function PlaceDetails({ place }: { place: Place }) {
                 {c.name}
                 <button
                   className="icon-button"
-                  aria-label={`Remove from ${c.name}`}
+                  aria-label={`Remover de ${c.name}`}
                   onClick={() =>
                     void saveLocal(() => atlasRepository.removeCollectionPlace(c.id, place.id))
                   }
@@ -245,7 +249,7 @@ export default function PlaceDetails({ place }: { place: Place }) {
               onClick={() => useUiStore.getState().setEditorOpen(true)}
             >
               <Pencil size={16} />
-              Edit marker
+              Editar marcador
             </button>
             <button
               className="button"
@@ -256,12 +260,12 @@ export default function PlaceDetails({ place }: { place: Place }) {
               }}
             >
               <Move size={16} />
-              Move
+              Mover
             </button>
           </div>
         ) : (
           <button className="text-button" onClick={() => void share()}>
-            {copied ? 'Link copied' : 'Copy place link'}
+            {copied ? 'Link copiado' : 'Copiar link do local'}
           </button>
         )}
       </div>

@@ -50,16 +50,16 @@ export function SavedPlaces() {
     <div className="library-view">
       <button className="library-row" onClick={() => show('favorites')}>
         <Star size={19} />
-        <span>Favorites</span>
+        <span>Favoritos</span>
         <span>{favorites.length}</span>
       </button>
       <button className="library-row" onClick={() => show('personal')}>
         <Bookmark size={19} />
-        <span>Personal markers</span>
+        <span>Marcadores pessoais</span>
         <span>{markers.length}</span>
       </button>
       <div className="section-label">
-        Collections <span>{collections.length}</span>
+        Coleções <span>{collections.length}</span>
       </div>
       <form
         className="collection-form"
@@ -69,19 +69,19 @@ export function SavedPlaces() {
         }}
       >
         <label className="sr-only" htmlFor="collection-name">
-          Collection name
+          Nome da coleção
         </label>
         <input
           id="collection-name"
           maxLength={120}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder={editing ? 'Rename collection' : 'New collection'}
+          placeholder={editing ? 'Renomear coleção' : 'Nova coleção'}
           disabled={!ready}
         />
         <button
           className="icon-button"
-          aria-label={editing ? 'Save collection name' : 'Create collection'}
+          aria-label={editing ? 'Salvar nome da coleção' : 'Criar coleção'}
           disabled={!name.trim() || !ready}
         >
           {editing ? <Check size={18} /> : <Plus size={18} />}
@@ -95,13 +95,13 @@ export function SavedPlaces() {
             setName('');
           }}
         >
-          Cancel rename
+          Cancelar renomeação
         </button>
       )}
       {!collections.length && (
         <p className="empty-state">
-          Keep your next route, discoveries or photo spots together. Create a collection, then add
-          places from their details.
+          Junte sua próxima rota, descobertas ou pontos para foto. Crie uma coleção e depois adicione
+          locais pela tela de detalhes.
         </p>
       )}
       {collections.map((c) => (
@@ -110,12 +110,15 @@ export function SavedPlaces() {
             <Bookmark size={17} />
             <span>
               {c.name}
-              <small>{c.placeIds.length} places</small>
+              <small>
+                {c.placeIds.length.toLocaleString('pt-BR')}{' '}
+                {c.placeIds.length === 1 ? 'local' : 'locais'}
+              </small>
             </span>
           </button>
           <button
             className="icon-button"
-            aria-label={`Rename ${c.name}`}
+            aria-label={`Renomear ${c.name}`}
             onClick={() => {
               setEditing(c);
               setName(c.name);
@@ -125,14 +128,14 @@ export function SavedPlaces() {
           </button>
           <button
             className="icon-button danger"
-            aria-label={`Delete ${c.name}`}
+            aria-label={`Apagar ${c.name}`}
             onClick={() => setDeleting(c.id)}
           >
             <Trash2 size={15} />
           </button>
           {deleting === c.id && (
             <div className="delete-confirm">
-              <span>Delete this collection? Places and notes are kept.</span>
+              <span>Apagar esta coleção? Os locais e as notas continuam salvos.</span>
               <button
                 className="text-button danger"
                 onClick={async () => {
@@ -143,10 +146,10 @@ export function SavedPlaces() {
                   }
                 }}
               >
-                Delete collection
+                Apagar coleção
               </button>
               <button className="text-button" onClick={() => setDeleting(null)}>
-                Cancel
+                Cancelar
               </button>
             </div>
           )}

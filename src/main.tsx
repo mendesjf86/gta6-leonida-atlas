@@ -9,6 +9,7 @@ import { AccountExtension } from './capabilities/AccountExtension';
 import { initializeAnalytics } from './app/analytics';
 import { AnalyticsConsent } from './app/AnalyticsConsent';
 import './app/atlas.css';
+import './app/mundovice-theme.css';
 import './features/project/project.css';
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
@@ -19,15 +20,15 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean
   render() {
     return this.state.failed ? (
       <main className="full-loading">
-        <h1>Atlas could not open this view</h1>
-        <p>Your local data has not been reset.</p>
+        <h1>Não foi possível abrir esta tela</h1>
+        <p>Seus dados locais não foram apagados.</p>
         <button
           className="button"
           onClick={() => {
             location.href = import.meta.env.BASE_URL;
           }}
         >
-          Return to the map
+          Voltar para o mapa
         </button>
       </main>
     ) : (

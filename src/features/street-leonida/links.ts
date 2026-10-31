@@ -1,7 +1,7 @@
 import type { PublicStreetLink, StreetLinkType } from './types';
 
-export function getStreetLinkLabel(type: StreetLinkType): 'Next moment' | 'Jump to scene' {
-  return type === 'VIDEO_TIMELINE_NEXT' ? 'Next moment' : 'Jump to scene';
+export function getStreetLinkLabel(type: StreetLinkType): 'Próximo momento' | 'Ir para a cena' {
+  return type === 'VIDEO_TIMELINE_NEXT' ? 'Próximo momento' : 'Ir para a cena';
 }
 
 export function derivePreviousMoment(
@@ -42,6 +42,6 @@ export function getCoverageState(
   const terminal = !links.some((link) => link.fromSlug === currentSlug);
   return {
     terminal,
-    message: terminal ? coverageMessage?.trim() || 'Coverage ends here' : null,
+    message: terminal ? coverageMessage?.trim() || 'A cobertura termina aqui' : null,
   };
 }

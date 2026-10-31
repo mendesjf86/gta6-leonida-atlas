@@ -12,7 +12,7 @@ const timeline: PublicStreetLink = {
   fromSlug: 'moment-one',
   toSlug: 'moment-two',
   type: 'VIDEO_TIMELINE_NEXT',
-  label: 'Next moment',
+  label: 'Próximo momento',
   note: null,
   authority: 'ROCKSTAR_OFFICIAL',
   confidence: 'HIGH',
@@ -20,13 +20,13 @@ const timeline: PublicStreetLink = {
 };
 
 describe('Street Leonida documented links', () => {
-  it('uses Next moment only for a reviewed timeline relation', () => {
-    expect(getStreetLinkLabel('VIDEO_TIMELINE_NEXT')).toBe('Next moment');
+  it('uses Próximo momento only for a reviewed timeline relation', () => {
+    expect(getStreetLinkLabel('VIDEO_TIMELINE_NEXT')).toBe('Próximo momento');
   });
 
   it.each(['SAME_PLACE_JUMP', 'REGION_JUMP', 'MANUAL_JUMP'] as const)(
-    'labels %s as Jump to scene',
-    (type) => expect(getStreetLinkLabel(type)).toBe('Jump to scene'),
+    'labels %s as Ir para a cena',
+    (type) => expect(getStreetLinkLabel(type)).toBe('Ir para a cena'),
   );
 
   it('derives previous only from an incoming timeline relation', () => {
@@ -42,17 +42,17 @@ describe('Street Leonida documented links', () => {
   it('returns an explicit terminal message when no outgoing documented link exists', () => {
     expect(getCoverageState('moment-two', [timeline], null)).toEqual({
       terminal: true,
-      message: 'Coverage ends here',
+      message: 'A cobertura termina aqui',
     });
   });
 
   it('uses the reviewed coverage message and stays non-terminal when a link exists', () => {
     expect(
-      getCoverageState('moment-one', [timeline], 'No further official media is documented.'),
+      getCoverageState('moment-one', [timeline], 'Não há mais mídia oficial documentada.'),
     ).toEqual({ terminal: false, message: null });
     expect(
-      getCoverageState('moment-two', [timeline], 'No further official media is documented.'),
-    ).toEqual({ terminal: true, message: 'No further official media is documented.' });
+      getCoverageState('moment-two', [timeline], 'Não há mais mídia oficial documentada.'),
+    ).toEqual({ terminal: true, message: 'Não há mais mídia oficial documentada.' });
   });
 
   it('keeps reviewed timeline navigation separate from non-spatial scene jumps', () => {
@@ -74,7 +74,7 @@ describe('Street Leonida documented links', () => {
       fromSlug: 'moment-one',
       toSlug: 'other-scene',
       type: 'REGION_JUMP',
-      label: 'Jump to scene',
+      label: 'Ir para a cena',
     };
     expect(links.resolveStreetNavigation?.('moment-one', [sceneJump, timeline])).toEqual({
       previousMoment: null,

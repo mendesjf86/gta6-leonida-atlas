@@ -119,7 +119,7 @@ export default function App() {
       .catch(() =>
         useDomainStore
           .getState()
-          .fail('The public catalogue could not be loaded. Reload to retry.'),
+          .fail('Não foi possível carregar o catálogo público. Recarregue para tentar de novo.'),
       );
     if (window.innerWidth < 800) useUiStore.getState().setSidebar(false);
     const network = (event: Event) =>
@@ -183,9 +183,9 @@ export default function App() {
     const initialPlace = allPlaces.find((place) => place.id === route.placeId);
     // Deep links must wait for the catalogue/local hydration before choosing a spawn.
     if (route.placeId && !initialPlace && (status === 'loading' || persistenceLoading))
-      return <div className="full-loading">Opening selected place in 3D…</div>;
+      return <div className="full-loading">Abrindo o local selecionado em 3D…</div>;
     return (
-      <Suspense fallback={<div className="full-loading">Opening 3D explorer…</div>}>
+      <Suspense fallback={<div className="full-loading">Abrindo o explorador 3D…</div>}>
         <ExplorerView
           key={`${route.placeId ?? 'default'}:${workspaceRevision}`}
           initialPlace={initialPlace}
@@ -197,17 +197,17 @@ export default function App() {
   }
   if (route.view === 'project')
     return (
-      <Suspense fallback={<div className="full-loading">Loading project information…</div>}>
+      <Suspense fallback={<div className="full-loading">Carregando informações do projeto…</div>}>
         <ProjectPage page={route.page} onClose={goMap} />
       </Suspense>
     );
   return (
     <main className="atlas-app" data-details={Boolean(selected)}>
       <a className="skip-link" href="#atlas-map-region">
-        Skip to map
+        Pular para o mapa
       </a>
       <Sidebar places={filtered} />
-      <section className="map-workspace" id="atlas-map-region" aria-label="Interactive Leonida map">
+      <section className="map-workspace" id="atlas-map-region" aria-label="Mapa interativo de Leonida">
         <MapView
           places={filtered}
           layers={layers}
@@ -221,24 +221,24 @@ export default function App() {
         <div className="map-topbar">
           <button
             className="button sidebar-toggle"
-            aria-label={sidebarOpen ? 'Hide sidebar' : 'Open sidebar'}
+            aria-label={sidebarOpen ? 'Ocultar painel lateral' : 'Abrir painel lateral'}
             onClick={() => useUiStore.getState().setSidebar(!sidebarOpen)}
           >
             <Menu size={18} />
-            <span>Explore</span>
+            <span>Explorar</span>
           </button>
           <div className="map-actions">
             <button className="button" disabled={!ready} onClick={beginMarker}>
               <MapPinPlus size={18} />
-              <span>Add marker</span>
+              <span>Adicionar marcador</span>
             </button>
             <button className="button" onClick={() => navigate('3d')}>
               <Box size={18} />
-              <span>3D explorer</span>
+              <span>Explorador 3D</span>
             </button>
             <button
               className="icon-button map-about"
-              aria-label="About this atlas"
+              aria-label="Sobre este mapa"
               onClick={() => navigate('about')}
             >
               <Info size={19} />
@@ -249,7 +249,7 @@ export default function App() {
           <div className="map-notice inline-error" role="alert">
             {error}
             <button className="text-button" onClick={() => location.reload()}>
-              Reload
+              Recarregar
             </button>
           </div>
         )}
@@ -258,16 +258,16 @@ export default function App() {
             <MapPinPlus size={19} />
             <span>
               {editorMode === 'create'
-                ? 'Click the map to place your marker'
-                : 'Click a new position for this marker'}
+                ? 'Clique no mapa para posicionar seu marcador'
+                : 'Clique em uma nova posição para este marcador'}
             </span>
             <button
               className="text-button"
               onClick={() => useUiStore.getState().setEditorOpen(true)}
             >
-              Enter coordinates
+              Digitar coordenadas
             </button>
-            <button className="icon-button" aria-label="Cancel placement" onClick={closeEditor}>
+            <button className="icon-button" aria-label="Cancelar posicionamento" onClick={closeEditor}>
               <X size={18} />
             </button>
           </div>
@@ -276,7 +276,7 @@ export default function App() {
       <Suspense
         fallback={
           <div className="loading-panel" role="status">
-            Opening panel…
+            Abrindo painel…
           </div>
         }
       >

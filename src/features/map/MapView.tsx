@@ -13,8 +13,13 @@ import {
   type MapBounds,
 } from './coordinates';
 import { buildSpatialIndex, clusterPlaces, querySpatialIndex, type PlaceCluster } from './spatial';
+import { iconForPlace, placeIconStyle } from './place-icons';
 import 'leaflet/dist/leaflet.css';
 import './map.css';
+
+/** Upstream project credit and the AGPL source of this modified build. */
+const UPSTREAM_REPOSITORY = 'https://github.com/navanem/gta6-leonida-atlas';
+const SOURCE_REPOSITORY = 'https://github.com/mendesjf86/gta6-leonida-atlas';
 
 export interface MapViewProps {
   places: Place[];
@@ -41,9 +46,23 @@ function markerIcon(
   selected: boolean,
 ): L.DivIcon {
   const cluster = group.places.length > 1;
+  const icon = cluster || !group.places[0] ? null : iconForPlace(group.places[0]);
+  if (icon) {
+    const size = 30;
+    const face = document.createElement('span');
+    face.className = 'atlas-pin-icon';
+    face.setAttribute('aria-hidden', 'true');
+    face.style.cssText = placeIconStyle(icon, size, import.meta.env?.BASE_URL ?? '/');
+    return L.divIcon({
+      html: face,
+      className: `atlas-map-marker has-icon ${selected ? 'is-selected' : ''}`,
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2],
+    });
+  }
   const content = document.createElement('span');
   content.className = cluster ? 'atlas-cluster-face' : 'atlas-pin-face';
-  content.style.setProperty('--pin-color', layer?.style.color ?? '#73cbbb');
+  content.style.setProperty('--pin-color', layer?.style.color ?? '#2fe6d2');
   content.setAttribute('aria-hidden', 'true');
   content.textContent = cluster
     ? group.places.length.toLocaleString()
@@ -117,13 +136,13 @@ export default function MapView(props: MapViewProps) {
         leafletBounds(BASEMAP_BOUNDS),
         {
           interactive: false,
-          alt: 'Approximate GTADB community reconstruction of Leonida',
+          alt: 'Reconstrução aproximada de Leonida feita pela comunidade do GTADB',
           className: 'atlas-source-basemap',
         },
       ).addTo(activeMap);
       overlay.on('error', () =>
         setMapError(
-          'The local basemap could not be loaded. Your saved places are still available.',
+          'Não foi possível carregar o mapa base. Seus locais salvos continuam disponíveis.',
         ),
       );
       overlay.on('load', () => setMapError(null));
@@ -139,11 +158,11 @@ export default function MapView(props: MapViewProps) {
         if (callbacks.current.editorMode === 'none') return;
         const position = fromMapCoordinate(event.latlng);
         if (!isValidPosition(position)) {
-          setPlacementMessage('Choose a point inside the source map.');
+          setPlacementMessage('Escolha um ponto dentro da área do mapa.');
           return;
         }
         setPreviewPosition(position);
-        setPlacementMessage('Position chosen. Complete the marker details to save.');
+        setPlacementMessage('Posição escolhida. Preencha os detalhes do marcador para salvar.');
         callbacks.current.onPlacePosition(position);
       });
       const resize = () => {
@@ -174,8 +193,8 @@ export default function MapView(props: MapViewProps) {
       setMap(null);
       setMapError(
         error instanceof Error
-          ? `Map unavailable: ${error.message}`
-          : 'The map could not be initialized.',
+          ? `Mapa indisponível: ${error.message}`
+          : 'Não foi possível iniciar o mapa.',
       );
     }
   }, [attempt]);
@@ -231,8 +250,8 @@ export default function MapView(props: MapViewProps) {
         );
         const draggable = selected && place.evidence === 'personal' && props.editorMode === 'move';
         const title = isCluster
-          ? `Explore ${group.places.length.toLocaleString()} places`
-          : `${place.title}${selected ? ', selected' : ''}`;
+          ? `Explorar ${group.places.length.toLocaleString('pt-BR')} locais`
+          : `${place.title}${selected ? ', selecionado' : ''}`;
         const marker = L.marker(toMapCoordinate(group.position), {
           icon: markerIcon(group, layer, selected),
           title,
@@ -259,7 +278,7 @@ export default function MapView(props: MapViewProps) {
           marker.on('click', () => {
             if (callbacks.current.editorMode !== 'none') {
               setPreviewPosition(group.position);
-              setPlacementMessage('Position chosen. Complete the marker details to save.');
+              setPlacementMessage('Posição escolhida. Preencha os detalhes do marcador para salvar.');
               callbacks.current.onPlacePosition(group.position);
               return;
             }
@@ -279,7 +298,7 @@ export default function MapView(props: MapViewProps) {
             const content = document.createElement('div');
             content.className = 'atlas-cluster-list';
             const heading = document.createElement('strong');
-            heading.textContent = `${group.places.length} places at this position`;
+            heading.textContent = `${group.places.length.toLocaleString('pt-BR')} locais nesta posição`;
             content.append(heading);
             for (const member of group.places.slice(0, 30)) {
               if (!layersById.get(member.layerId)?.interactive) continue;
@@ -295,7 +314,7 @@ export default function MapView(props: MapViewProps) {
             if (group.places.length > 30) {
               const note = document.createElement('p');
               note.textContent =
-                'Showing the first 30 records. Search the catalogue to find any other place.';
+                'Mostrando os 30 primeiros. Use a busca para encontrar outros locais.';
               content.append(note);
             }
             L.popup({ maxWidth: 310, maxHeight: 280 })
@@ -309,11 +328,11 @@ export default function MapView(props: MapViewProps) {
             const position = fromMapCoordinate(marker.getLatLng());
             if (!isValidPosition(position)) {
               marker.setLatLng(toMapCoordinate(place.position!));
-              setPlacementMessage('Choose a point inside the source map.');
+              setPlacementMessage('Escolha um ponto dentro da área do mapa.');
               return;
             }
             setPreviewPosition(position);
-            setPlacementMessage('Marker moved in preview. Save its details to keep this position.');
+            setPlacementMessage('Marcador movido na prévia. Salve os detalhes para manter esta posição.');
             callbacks.current.onPlacePosition(position);
           });
         }
@@ -422,38 +441,38 @@ export default function MapView(props: MapViewProps) {
         : map.getCenter();
     const position = fromMapCoordinate(center);
     if (!isValidPosition(position)) {
-      setPlacementMessage('Pan to a point inside the source map.');
+      setPlacementMessage('Arraste o mapa até um ponto dentro da área do mapa.');
       return;
     }
     setPreviewPosition(position);
-    setPlacementMessage('Map center chosen. Complete the marker details to save.');
+    setPlacementMessage('Centro do mapa escolhido. Preencha os detalhes do marcador para salvar.');
     props.onPlacePosition(position);
   };
 
   return (
     <div className={`atlas-map-view ${props.editorMode !== 'none' ? 'is-editing' : ''}`}>
       <p id={descriptionId} className="map-sr-only">
-        Interactive map using approximate game coordinates. Use arrow keys to pan and plus or minus
-        to zoom. Select a map marker or use the searchable place list.
+        Mapa interativo com coordenadas aproximadas do jogo. Use as setas para mover e mais ou menos
+        para dar zoom. Selecione um marcador no mapa ou use a lista de locais com busca.
       </p>
       <div
         ref={hostRef}
         className="atlas-map-canvas"
         role="region"
-        aria-label="Leonida interactive map"
+        aria-label="Mapa interativo de Leonida"
         aria-describedby={descriptionId}
         tabIndex={0}
       />
       {props.editorMode !== 'none' ? (
         <div className="atlas-map-editor-hint">
           <button type="button" onClick={useMapCenter}>
-            Use map center
+            Usar centro do mapa
           </button>
           <span className="map-sr-only" role="status">
             {placementMessage ||
               (props.editorMode === 'move'
-                ? 'Choose the new marker position'
-                : 'Choose a position for your marker')}
+                ? 'Escolha a nova posição do marcador'
+                : 'Escolha uma posição para seu marcador')}
           </span>
         </div>
       ) : null}
@@ -462,11 +481,11 @@ export default function MapView(props: MapViewProps) {
           +
         </div>
       ) : null}
-      <div className="atlas-map-navigation" aria-label="Map navigation">
+      <div className="atlas-map-navigation" aria-label="Navegação do mapa">
         <button
           type="button"
-          aria-label="Zoom in"
-          title="Zoom in"
+          aria-label="Aproximar"
+          title="Aproximar"
           disabled={!map || zoom >= MAX_ZOOM}
           onClick={() => map?.zoomIn(0.5, { animate: !props.preferences.reducedMotion })}
         >
@@ -474,8 +493,8 @@ export default function MapView(props: MapViewProps) {
         </button>
         <button
           type="button"
-          aria-label="Zoom out"
-          title="Zoom out"
+          aria-label="Afastar"
+          title="Afastar"
           disabled={!map || zoom <= MIN_ZOOM}
           onClick={() => map?.zoomOut(0.5, { animate: !props.preferences.reducedMotion })}
         >
@@ -483,8 +502,8 @@ export default function MapView(props: MapViewProps) {
         </button>
         <button
           type="button"
-          aria-label="Show full source coverage"
-          title="Show full source coverage"
+          aria-label="Mostrar o mapa inteiro"
+          title="Mostrar o mapa inteiro"
           disabled={!map}
           onClick={() =>
             map?.fitBounds(leafletBounds(INITIAL_BOUNDS), {
@@ -497,8 +516,10 @@ export default function MapView(props: MapViewProps) {
         </button>
       </div>
       <div className="atlas-map-caption">
-        <span>{counts.places.toLocaleString()} places in view</span>
-        {counts.groupedForPerformance ? <span>Grouped for map performance</span> : null}
+        <span>
+          {counts.places.toLocaleString('pt-BR')} {counts.places === 1 ? 'local' : 'locais'} na tela
+        </span>
+        {counts.groupedForPerformance ? <span>Agrupados para o mapa ficar mais leve</span> : null}
       </div>
       <div className="atlas-map-attribution">
         <a href="https://map.gtadb.org" target="_blank" rel="noreferrer">
@@ -508,13 +529,21 @@ export default function MapView(props: MapViewProps) {
         <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">
           CC BY 4.0
         </a>
-        <span> · Approximate community map</span>
+        <span> · Mapa aproximado da comunidade · baseado no </span>
+        <a href={UPSTREAM_REPOSITORY} target="_blank" rel="noreferrer">
+          Leonida Atlas
+        </a>
+        <span> (</span>
+        <a href={SOURCE_REPOSITORY} target="_blank" rel="noreferrer">
+          código-fonte
+        </a>
+        <span>)</span>
       </div>
       {mapError ? (
         <div className="atlas-map-error" role="alert">
           <span>{mapError}</span>
           <button type="button" onClick={() => setAttempt((value) => value + 1)}>
-            Reload map
+            Recarregar mapa
           </button>
         </div>
       ) : null}

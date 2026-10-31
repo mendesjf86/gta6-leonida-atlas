@@ -22,19 +22,29 @@ function categoryFor(tags: readonly string[]): Category {
   return 'landmark';
 }
 
+const UNCERTAINTY_LABELS: Record<string, string> = {
+  'unknown-name': 'nome desconhecido',
+  unconfirmed: 'não confirmado',
+  'may-not-exist': 'pode não existir',
+  cancelled: 'cancelado',
+  fictional: 'fictício',
+  demolished: 'demolido',
+  duplicate: 'duplicado',
+};
+
 function landmarkToPlace(landmark: GtadbLandmark): Place {
   const reasons = classifyGtadbUncertaintyReasons(landmark.inGameAddress, landmark.tags);
   const uncertain = reasons.length > 0;
   return {
     id: landmark.id,
-    title: landmark.inGameAddress.trim() || `Unnamed community place (${landmark.id})`,
+    title: landmark.inGameAddress.trim() || `Local da comunidade sem nome (${landmark.id})`,
     description: [
       landmark.inGameCoordinates
-        ? 'Approximate community-mapped position.'
-        : 'No game position supplied; this record is searchable only.',
-      uncertain ? `Source uncertainty: ${reasons.join(', ').replaceAll('-', ' ')}.` : '',
+        ? 'Posição aproximada, mapeada pela comunidade.'
+        : 'Sem posição conhecida no jogo; este local aparece só na busca.',
+      uncertain ? `Incerteza na fonte: ${reasons.map((reason) => UNCERTAINTY_LABELS[reason] ?? reason.replaceAll('-', ' ')).join(', ')}.` : '',
       landmark.realWorldAddress
-        ? `Real-world reference (analogue only): ${landmark.realWorldAddress}`
+        ? `Referência no mundo real (só como comparação): ${landmark.realWorldAddress}`
         : '',
     ]
       .filter(Boolean)
@@ -47,7 +57,7 @@ function landmarkToPlace(landmark: GtadbLandmark): Place {
     tags: [...landmark.tags],
     region: landmark.inGameAddress.split(',').slice(1).join(',').trim(),
     source: {
-      title: `GTADB / Map GTA · revision ${GTADB_REVISION.slice(0, 7)}`,
+      title: `GTADB / Map GTA · revisão ${GTADB_REVISION.slice(0, 7)}`,
       url: GTADB_PREFERRED_SOURCE,
       license: GTADB_LICENSE,
     },
@@ -63,7 +73,7 @@ export function catalogueFromSnapshot(input: unknown): Place[] {
     !('landmarks' in input) ||
     !Array.isArray(input.landmarks)
   ) {
-    throw new Error('The bundled community catalogue is invalid.');
+    throw new Error('O catálogo da comunidade incluído no mapa é inválido.');
   }
   const tuples: Record<string, unknown> = {};
   for (const candidate of input.landmarks) {
@@ -73,10 +83,10 @@ export function catalogueFromSnapshot(input: unknown): Place[] {
       typeof candidate.id !== 'string' ||
       !/^L\d+$/.test(candidate.id)
     ) {
-      throw new Error('The community catalogue contains an invalid record.');
+      throw new Error('O catálogo da comunidade tem um registro inválido.');
     }
     if (Object.hasOwn(tuples, candidate.id))
-      throw new Error(`Duplicate community record: ${candidate.id}`);
+      throw new Error(`Registro duplicado no catálogo da comunidade: ${candidate.id}`);
     tuples[candidate.id] = [
       candidate.inGameAddress,
       candidate.inGameCoordinates === null ? [] : candidate.inGameCoordinates,
@@ -101,7 +111,7 @@ export function catalogueFromSnapshot(input: unknown): Place[] {
     source: {
       title: region.source?.title ?? 'Rockstar Games',
       url: region.source?.url ?? '',
-      license: 'Official name; GTADB position CC BY 4.0',
+      license: 'Nome oficial; posição do GTADB, CC BY 4.0',
     },
     evidence: 'approximate',
   }));
@@ -119,7 +129,7 @@ export function loadCatalogue(): Promise<Place[]> {
     )
       .then(async (response) => {
         if (!response.ok)
-          throw new Error(`Could not load the community catalogue (${response.status}).`);
+          throw new Error(`Não foi possível carregar o catálogo da comunidade (${response.status}).`);
         return catalogueFromSnapshot(await response.json());
       })
       .catch((error: unknown) => {
@@ -139,8 +149,8 @@ export function markerToPlace(marker: PersonalMarker): Place {
     position: marker.position,
     layerId: 'personal',
     tags: [marker.icon],
-    region: 'My markers',
-    source: { title: 'Your local atlas', url: '' },
+    region: 'Meus marcadores',
+    source: { title: 'Seu mapa neste aparelho', url: '' },
     evidence: 'personal',
   };
 }

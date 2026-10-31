@@ -15,6 +15,14 @@ interface RegionalResearchProps {
   travel?: "explorer" | "link";
 }
 
+/** Shows ISO calendar dates (YYYY-MM-DD) as pt-BR dates; other values pass through. */
+function formatDate(value: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+  return new Date(`${value}T00:00:00Z`).toLocaleDateString("pt-BR", {
+    timeZone: "UTC",
+  });
+}
+
 export default function RegionalResearch({
   region,
   travel = "link",
@@ -25,22 +33,29 @@ export default function RegionalResearch({
     : RESEARCH_REGIONS;
   return (
     <section className="regional-research" aria-labelledby={headingId}>
-      <h3 id={headingId}>Discover Leonida</h3>
+      <h3 id={headingId}>Descubra Leonida</h3>
       <p className="regional-research-intro">
-        {region ? "Regional context. " : ""}
-        Official names and visible details. Exact locations are not established
-        by these sources.
+        {region ? "Contexto da região. " : ""}
+        Nomes oficiais e detalhes visíveis. Estas fontes não definem a
+        localização exata.
       </p>
       <small className="regional-research-reviewed">
-        Sources reviewed{" "}
-        <time dateTime={RESEARCH_REVIEWED_AT}>{RESEARCH_REVIEWED_AT}</time>.
-        Individual screenshot publication dates are not supplied.
+        Fontes revisadas em{" "}
+        <time dateTime={RESEARCH_REVIEWED_AT}>
+          {formatDate(RESEARCH_REVIEWED_AT)}
+        </time>
+        . As datas de publicação de cada imagem não foram informadas.
       </small>
       {groups.map((group) => (
         <details className="regional-research-group" key={group.slug}>
           <summary>
             {group.name}
-            <span>{getRegionDiscoveries(group.slug).length} discoveries</span>
+            <span>
+              {getRegionDiscoveries(group.slug).length}{" "}
+              {getRegionDiscoveries(group.slug).length === 1
+                ? "descoberta"
+                : "descobertas"}
+            </span>
           </summary>
           <p className="regional-research-overview">{group.summary}</p>
           <ul className="regional-discoveries">
@@ -50,7 +65,7 @@ export default function RegionalResearch({
                 <p>{discovery.summary}</p>
                 <ul
                   className="regional-discovery-sources"
-                  aria-label={`Sources for ${discovery.title}`}
+                  aria-label={`Fontes de ${discovery.title}`}
                 >
                   {discovery.sourceIds.map((sourceId) => {
                     const source = RESEARCH_SOURCES[sourceId]!;
@@ -58,8 +73,8 @@ export default function RegionalResearch({
                       <li key={sourceId}>
                         <span>
                           {source.evidence === "official-image"
-                            ? "Official image"
-                            : "Official text"}
+                            ? "Imagem oficial"
+                            : "Texto oficial"}
                         </span>
                         <a href={source.url} target="_blank" rel="noreferrer">
                           {source.title}
@@ -72,31 +87,31 @@ export default function RegionalResearch({
             ))}
           </ul>
           <p className="regional-research-placement">
-            Travel opens the existing approximate region view, not the specific
-            site described above.
+            A viagem abre a vista aproximada da região, não o lugar exato
+            descrito acima.
           </p>
           {travel === "explorer" ? (
             <button
               type="button"
               data-walk-region={group.slug}
-              aria-label={`Explore the region: ${group.name}`}
+              aria-label={`Explorar a região: ${group.name}`}
             >
-              Explore the region
+              Explorar a região
             </button>
           ) : (
             <a
               className="regional-research-travel"
               href={explorerPath(`region:${group.slug}`)}
             >
-              Explore {group.name} in 3D
+              Explorar {group.name} em 3D
             </a>
           )}
         </details>
       ))}
       {!region && (
         <div className="regional-research-videos">
-          <h4>Official video sources</h4>
-          <p>Rockstar’s video releases, with their published dates.</p>
+          <h4>Vídeos oficiais</h4>
+          <p>Vídeos lançados pela Rockstar, com as datas de publicação.</p>
           {["extended-look", "trailer-2"].map((id) => {
             const source = RESEARCH_SOURCES[id]!;
             return (
@@ -105,7 +120,9 @@ export default function RegionalResearch({
                   {source.title}
                 </a>
                 {" · "}
-                <time dateTime={source.publishedAt!}>{source.publishedAt}</time>
+                <time dateTime={source.publishedAt!}>
+                  {formatDate(source.publishedAt!)}
+                </time>
               </p>
             );
           })}

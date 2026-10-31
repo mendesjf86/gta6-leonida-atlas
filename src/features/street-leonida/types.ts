@@ -105,7 +105,7 @@ export interface PublicStreetLink {
   fromSlug: string;
   toSlug: string;
   type: StreetLinkType;
-  label: 'Next moment' | 'Jump to scene';
+  label: 'Próximo momento' | 'Ir para a cena';
   note: string | null;
   authority: StreetAuthority;
   confidence: StreetConfidence;

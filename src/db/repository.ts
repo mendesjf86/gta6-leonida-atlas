@@ -25,7 +25,7 @@ type PreferencesRecord = { key: 'preferences'; value: Preferences };
 /** A draft must be reconciled with the current record before it can be saved. */
 export class ConflictError extends Error {
   constructor(
-    message = 'This record changed in another tab or import. Review the current version before saving.',
+    message = 'Este item mudou em outra aba ou importação. Confira a versão atual antes de salvar.',
   ) {
     super(message);
     this.name = 'ConflictError';
@@ -136,14 +136,14 @@ export class AtlasDatabase extends Dexie {
 
   private async requirePlace(id: string): Promise<void> {
     if (id.startsWith('custom:') && !(await this.markers.get(id))) {
-      throw new BackupValidationError(`reference contains missing personal marker ${id}`);
+      throw new BackupValidationError(`a referência aponta para o marcador pessoal ${id}, que não existe`);
     }
   }
 
   private async checkCapacity<T>(table: Table<T, string>, id: string): Promise<void> {
     if (!(await table.get(id)) && (await table.count()) >= BACKUP_LIMITS.items) {
       throw new BackupValidationError(
-        `${table.name} exceeds the limit of ${BACKUP_LIMITS.items} items`,
+        `${table.name} passa do limite de ${BACKUP_LIMITS.items.toLocaleString('pt-BR')} itens`,
       );
     }
   }
@@ -250,7 +250,7 @@ export class AtlasDatabase extends Dexie {
       const current = await this.collections.get(collectionId);
       if (!current)
         throw new ConflictError(
-          'This collection was deleted. Create a new collection to continue.',
+          'Esta coleção foi apagada. Crie uma nova coleção para continuar.',
         );
       const value = parseCollection({
         ...update(current),
@@ -347,6 +347,6 @@ export function replaceAtlasRepository(repository: AtlasDatabase): void {
 
 export function workspaceDatabaseName(workspaceId: string | null): string {
   if (workspaceId === null) return 'leonida-atlas';
-  if (!/^[A-Za-z0-9_-]{1,200}$/.test(workspaceId)) throw new Error('Invalid workspace identifier.');
+  if (!/^[A-Za-z0-9_-]{1,200}$/.test(workspaceId)) throw new Error('Identificador de espaço de trabalho inválido.');
   return `leonida-atlas-workspace-${workspaceId}`;
 }

@@ -35,15 +35,15 @@ interface LocalRegionRecord {
 }
 
 const gtadbSource: PublicStreetSource = {
-  title: `GTADB / Map GTA community reconstruction, pinned revision ${GTADB_REVISION.slice(0, 7)}`,
-  publisher: 'GTADB / Map GTA contributors',
+  title: `Reconstrução da comunidade GTADB / Map GTA, revisão fixada ${GTADB_REVISION.slice(0, 7)}`,
+  publisher: 'Colaboradores do GTADB / Map GTA',
   url: GTADB_PREFERRED_SOURCE,
   publishedAt: null,
   retrievedAt: '2026-09-05',
 };
 
 const rockstarSource = (url: string): PublicStreetSource => ({
-  title: 'Grand Theft Auto VI official media',
+  title: 'Mídia oficial de Grand Theft Auto VI',
   publisher: 'Rockstar Games',
   url,
   publishedAt: null,
@@ -65,9 +65,9 @@ const localRegions: readonly LocalRegionRecord[] = [
     name: 'Vice City',
     category: 'CITY',
     description:
-      'Officially named urban region represented in the Atlas with approximate GTADB-frame placement, beachfront density and skyline context.',
+      'Região urbana com nome oficial, representada no mapa com posição aproximada na base do GTADB, orla densa e contexto do horizonte de prédios.',
     visualDescription:
-      'Pastel coastal city fabric, beach/water edge, palms, skyline massing and bright humid light.',
+      'Cidade litorânea em tons pastel, faixa de praia e água, palmeiras, conjunto de arranha-céus e luz forte e úmida.',
     sourceUrl: OFFICIAL_SOURCE_URLS.screenshots,
   },
   {
@@ -75,9 +75,9 @@ const localRegions: readonly LocalRegionRecord[] = [
     name: 'Leonida Keys',
     category: 'REGION',
     description:
-      'Officially named island region represented with approximate community placement, low islands, causeway language and turquoise coastal water.',
+      'Região de ilhas com nome oficial, representada com posição aproximada da comunidade, ilhas baixas, pontes-estrada e água costeira turquesa.',
     visualDescription:
-      'Low islands, shallow water, marina/causeway cues and mangrove/coastal scrub treatment.',
+      'Ilhas baixas, água rasa, marinas e pontes-estrada, mangue e vegetação costeira.',
     sourceUrl: OFFICIAL_SOURCE_URLS.onlyInLeonida,
   },
   {
@@ -85,9 +85,9 @@ const localRegions: readonly LocalRegionRecord[] = [
     name: 'Grassrivers',
     category: 'NATURAL_AREA',
     description:
-      'Officially named wetland region represented as approximate low-density marsh and waterway reconstruction.',
+      'Região de áreas alagadas com nome oficial, representada como reconstrução aproximada de pântanos e canais pouco povoados.',
     visualDescription:
-      'Marsh water, reeds, low horizon, wood structures and sparse wetland density.',
+      'Água de pântano, juncos, horizonte baixo, estruturas de madeira e ocupação esparsa.',
     sourceUrl: OFFICIAL_SOURCE_URLS.onlyInLeonida,
   },
   {
@@ -95,9 +95,9 @@ const localRegions: readonly LocalRegionRecord[] = [
     name: 'Port Gellhorn',
     category: 'CITY',
     description:
-      'Officially named western/coastal settlement represented with approximate community placement and roadside motel/commercial character.',
+      'Cidade litorânea do oeste com nome oficial, representada com posição aproximada da comunidade e clima de motéis e comércio de beira de estrada.',
     visualDescription:
-      'Faded motels, low strip commerce, rougher roads, neon accents and coastal sprawl.',
+      'Motéis desbotados, comércio baixo em fileira, ruas mais precárias, toques de neon e expansão pelo litoral.',
     sourceUrl: OFFICIAL_SOURCE_URLS.onlyInLeonida,
   },
   {
@@ -105,9 +105,9 @@ const localRegions: readonly LocalRegionRecord[] = [
     name: 'Ambrosia',
     category: 'REGION',
     description:
-      'Officially named industrial/agricultural region represented with approximate GTADB-frame placement and infrastructure context.',
+      'Região industrial e agrícola com nome oficial, representada com posição aproximada na base do GTADB e contexto de infraestrutura.',
     visualDescription:
-      'Industrial/agricultural massing: silos, tanks, sheds, fields and utility infrastructure.',
+      'Volumes industriais e agrícolas: silos, tanques, galpões, plantações e redes de energia.',
     sourceUrl: OFFICIAL_SOURCE_URLS.onlyInLeonida,
   },
   {
@@ -115,9 +115,9 @@ const localRegions: readonly LocalRegionRecord[] = [
     name: 'Mount Kalaga',
     category: 'NATURAL_AREA',
     description:
-      'Officially named northern wilderness region represented with approximate placement, relief, forest and winding-road context.',
+      'Região selvagem do norte com nome oficial, representada com posição aproximada, relevo, floresta e estradas sinuosas.',
     visualDescription:
-      'Forested ridges, rock cuts, road curvature, riverside structure cues and a wilder atmosphere.',
+      'Serras com floresta, cortes na rocha, estradas com curvas, estruturas à beira do rio e um clima mais selvagem.',
     sourceUrl: OFFICIAL_SOURCE_URLS.onlyInLeonida,
   },
 ] as const;
@@ -142,7 +142,7 @@ const localPlaces: readonly PublicStreetPlace[] = localRegions.map((region) => (
   slug: region.slug,
   aliases: [],
   category: region.category,
-  description: `${RESEARCH_REGIONS.find((research) => research.slug === region.slug)!.summary} Atlas placement and reconstructed geometry remain approximate.`,
+  description: `${RESEARCH_REGIONS.find((research) => research.slug === region.slug)!.summary} A posição no mapa e a geometria reconstruída continuam aproximadas.`,
   region: { name: region.name, slug: region.slug },
   relatedLocationSlug: null,
   position: localPosition(region.slug),
@@ -152,16 +152,16 @@ const localPlaces: readonly PublicStreetPlace[] = localRegions.map((region) => (
 
 const localViewpoints: readonly PublicStreetViewpoint[] = localRegions.map((region) => ({
   slug: `${region.slug}-regional-entry`,
-  title: `${region.name} regional entry`,
+  title: `Entrada regional: ${region.name}`,
   place: { name: region.name, slug: region.slug },
   media: localMedia,
   source: rockstarSource(region.sourceUrl),
   labels: ['Official place name', 'Official media', 'Community-mapped position', 'Approximate position'],
   position: localPosition(region.slug),
-  perspective: 'Regional arrival view',
-  captureContext: `Local open-source catalogue. GTADB-derived position remains approximate; data source: ${GTADB_PREFERRED_SOURCE}; license: ${GTADB_LICENSE_URL}.`,
+  perspective: 'Vista de chegada na região',
+  captureContext: `Catálogo local de código aberto. A posição derivada do GTADB continua aproximada; fonte dos dados: ${GTADB_PREFERRED_SOURCE}; licença: ${GTADB_LICENSE_URL}.`,
   visualDescription: region.visualDescription,
-  coverageMessage: 'Coverage is regional and approximate; unknown detail is intentionally not filled.',
+  coverageMessage: 'A cobertura é regional e aproximada; detalhes desconhecidos não são preenchidos de propósito.',
   links: [],
 }));
 

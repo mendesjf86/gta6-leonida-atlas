@@ -107,8 +107,8 @@ function ensureFrame() {
   next.setAttribute('aria-hidden', 'true');
   next.tabIndex = -1;
   next.title = cleanupPending
-    ? 'Atlas analytics preference cleanup'
-    : 'Consented anonymous Atlas visit measurement';
+    ? 'Limpeza da preferência de estatísticas do mapa'
+    : 'Medição anônima de visitas do mapa, com consentimento';
   // A distinct, dedicated origin is required. Google never shares the app origin.
   next.setAttribute('sandbox', 'allow-scripts allow-same-origin');
   next.referrerPolicy = 'no-referrer';

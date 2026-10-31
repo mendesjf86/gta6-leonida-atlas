@@ -87,7 +87,7 @@ describe('portable backup validation', () => {
     (field) => {
       const input = backup();
       (input[field] as unknown[]).push(structuredClone(input[field][0]));
-      expect(() => parseBackup(input)).toThrow(/duplicate/i);
+      expect(() => parseBackup(input)).toThrow(/duplicate|duplicad/i);
     },
   );
 
@@ -97,7 +97,7 @@ describe('portable backup validation', () => {
     expect(() => parseBackup(missing)).toThrow(/missing|reference/i);
     const duplicate = backup();
     duplicate.collections[0]!.placeIds.push('L42');
-    expect(() => parseBackup(duplicate)).toThrow(/duplicate/i);
+    expect(() => parseBackup(duplicate)).toThrow(/duplicate|duplicad/i);
   });
 
   it('rejects oversized lists, text, and malformed fields', () => {
@@ -134,7 +134,7 @@ describe('portable backup validation', () => {
   it('rejects impossible calendar dates and malformed legacy preference values', () => {
     const input = backup();
     input.markers[0]!.createdAt = '2026-02-31T12:00:00.000Z';
-    expect(() => parseBackup(input)).toThrow(/date/i);
+    expect(() => parseBackup(input)).toThrow(/date|data/i);
     expect(() => parseBackup({ ...backup(), version: 1, preferences: null })).toThrow(
       /preferences/i,
     );

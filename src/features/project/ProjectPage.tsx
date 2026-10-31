@@ -18,14 +18,28 @@ export interface ProjectPageProps {
   onClose: () => void;
 }
 
+/** Upstream open-source project this fan edition is based on. */
+const UPSTREAM_REPOSITORY = 'https://github.com/navanem/gta6-leonida-atlas';
+/** Source code of this modified version (AGPL-3.0 §13). */
+const MODIFIED_SOURCE_REPOSITORY = 'https://github.com/mendesjf86/gta6-leonida-atlas';
+
 const pages = [
-  ['about', 'About the atlas'],
-  ['documentation', 'Documentation'],
-  ['credits', 'Credits & sources'],
-  ['contributing', 'Contributing'],
-  ['changelog', 'Changelog'],
-  ['licenses', 'Licenses'],
+  ['about', 'Sobre o mapa'],
+  ['documentation', 'Como usar'],
+  ['credits', 'Créditos e fontes'],
+  ['contributing', 'Como contribuir'],
+  ['changelog', 'Notas de versão'],
+  ['licenses', 'Licenças'],
 ] as const;
+
+function formatReleaseDate(date: string): string {
+  return new Date(`${date}T00:00:00Z`).toLocaleDateString('pt-BR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
 
 function Section({ title, children, id }: { title: string; children: ReactNode; id?: string }) {
   return (
@@ -40,51 +54,68 @@ function About() {
   return (
     <>
       <p className="project-lead">
-        An independent atlas that makes GTA VI location evidence legible, explorable and honest
-        about its limits.
+        O Mapa de Leonida é o mapa da comunidade de GTA 6 do Mundo Vice: um atlas independente que
+        organiza as evidências de locais de GTA VI de um jeito claro, fácil de explorar e honesto
+        sobre seus limites.
       </p>
       <p className="project-release-version">
-        Current release: <a href="#release-history">{LEONIDA_ATLAS_RELEASES[0]!.version}</a>
+        Versão atual: <a href="#release-history">{LEONIDA_ATLAS_RELEASES[0]!.version}</a>
       </p>
-      <Section title="Why this exists">
+      <Section title="Por que este mapa existe">
         <p>
-          Public trailers, screenshots, official pages and community research reveal fragments of
-          Leonida. The atlas gives those fragments a shared frame so readers can inspect
-          relationships without mistaking an estimate for confirmed geography.
+          Trailers, capturas de tela, páginas oficiais e pesquisas da comunidade revelam pedaços de
+          Leonida. O mapa reúne esses pedaços em uma base comum para você comparar as relações entre
+          eles sem confundir uma estimativa com geografia confirmada.
         </p>
         <p>
-          This is a community project, not an official map, a leaked game asset or a promise that
-          every road and landmark will appear in the released game.
-        </p>
-      </Section>
-      <Section title="What approximate means">
-        <p>
-          Community-derived coastlines, routes and positions can change when better evidence
-          arrives. Uncertainty stays visible; unsupported areas remain unknown instead of being
-          completed by guesswork.
+          Este é um projeto da comunidade. Não é um mapa oficial, nem um arquivo vazado do jogo, nem
+          uma promessa de que cada rua e ponto de referência vai aparecer no jogo lançado.
         </p>
       </Section>
-      <Section title="Your own atlas">
+      <Section title="O que significa aproximado">
         <p>
-          Explore the bundled map as a guest, keep favorites and notes, organize collections and add
-          personal markers. Your edits live in this browser’s IndexedDB storage. Export a backup to
-          keep a portable copy or move your work between browsers.
+          Litorais, rotas e posições definidos pela comunidade podem mudar quando surgirem
+          evidências melhores. A incerteza fica sempre visível: áreas sem fonte continuam
+          desconhecidas em vez de serem completadas no chute.
+        </p>
+      </Section>
+      <Section title="Seu mapa pessoal">
+        <p>
+          Explore o mapa como visitante, guarde favoritos e notas, organize coleções e adicione
+          marcadores pessoais. Suas edições ficam salvas no armazenamento IndexedDB deste navegador.
+          Exporte um backup para ter uma cópia portátil ou levar seu trabalho para outro navegador.
         </p>
         <p>
-          Personal annotations are separate from the source catalogue. They never turn a community
-          estimate into a confirmed location.
+          Suas anotações pessoais ficam separadas do catálogo de fontes. Elas nunca transformam uma
+          estimativa da comunidade em um local confirmado.
         </p>
       </Section>
       <AnalyticsPreferences />
-      <Section title="Independent by design">
+      <Section title="Independente por natureza">
         <p>
-          The public application builds as static files and runs without a CMS, private server or
-          account. Its source code is licensed under AGPL-3.0-only. The optional 3D explorer uses
-          the same community coordinate frame.
+          O aplicativo público é gerado como arquivos estáticos e funciona sem CMS, servidor privado
+          ou conta. O código-fonte é licenciado sob AGPL-3.0-only. O explorador 3D opcional usa a
+          mesma base de coordenadas da comunidade.
         </p>
       </Section>
-      <Section title="Release history" id="release-history">
-        <p>Every release since v0.5.0, from newest to oldest.</p>
+      <Section title="Baseado no Leonida Atlas">
+        <p>
+          Esta edição do Mundo Vice é uma versão modificada do{' '}
+          <a href={UPSTREAM_REPOSITORY} target="_blank" rel="noreferrer">
+            Leonida Atlas
+          </a>
+          , projeto de código aberto criado por navanem e licenciado sob AGPL-3.0. O código-fonte
+          desta versão modificada está disponível em{' '}
+          <a href={MODIFIED_SOURCE_REPOSITORY} target="_blank" rel="noreferrer">
+            github.com/mendesjf86/gta6-leonida-atlas
+          </a>
+          .
+        </p>
+      </Section>
+      <Section title="Histórico de versões" id="release-history">
+        <p>
+          Todas as versões do Leonida Atlas desde a v0.5.0, da mais recente para a mais antiga.
+        </p>
         <ol className="project-release-history">
           {LEONIDA_ATLAS_RELEASES.map((release, index) => (
             <li key={release.version} className="project-release-card">
@@ -96,15 +127,15 @@ function About() {
                 >
                   {release.version}
                 </a>
-                {index === 0 && <span className="project-release-current">Current</span>}
-                <time dateTime={release.date}>{release.date}</time>
+                {index === 0 && <span className="project-release-current">Atual</span>}
+                <time dateTime={release.date}>{formatReleaseDate(release.date)}</time>
               </div>
               <h3>{release.title}</h3>
               <p>{release.summary}</p>
             </li>
           ))}
         </ol>
-        <a href={projectPath('changelog')}>Full changelog</a>
+        <a href={projectPath('changelog')}>Ver todas as notas de versão</a>
       </Section>
     </>
   );
@@ -114,87 +145,95 @@ function Documentation() {
   return (
     <>
       <p className="project-lead">
-        How source records, evidence labels and local work fit together.
+        Como os registros de fontes, os níveis de evidência e o seu trabalho local se encaixam.
       </p>
-      <Section title="Explore and organize">
+      <Section title="Explore e organize">
         <p>
-          Search by name, tag or source identifier. Use layers and filters to narrow the map, then
-          select a place to inspect its source, coordinates and uncertainty. Save a favorite, add a
-          note or include it in a collection.
+          Pesquise por nome, tag ou identificador da fonte. Use camadas e filtros para refinar o
+          mapa e selecione um local para ver a fonte, as coordenadas e o grau de incerteza. Salve
+          como favorito, adicione uma nota ou inclua o local em uma coleção.
         </p>
         <p>
-          Personal markers describe your own observations. Their positions use the same
-          game-coordinate frame as the catalogue. They remain clearly identified as personal data.
-        </p>
-      </Section>
-      <Section title="Shared coordinates">
-        <p>
-          The coordinate plane represents Leonida game units, never real-world latitude and
-          longitude. The calibrated transform is <code>world x = GTADB x × 2</code> and{' '}
-          <code>world z = −GTADB y × 2</code>. The legacy SVG map uses that world z value for its
-          vertical axis. The main atlas and 3D reconstruction stay aligned with the same source
-          records.
-        </p>
-        <p>
-          Missing coordinates remain missing; zero is a valid coordinate and is never a substitute
-          for unknown placement. Real-world analogue coordinates are provenance only.
+          Marcadores pessoais registram as suas próprias observações. As posições deles usam a mesma
+          base de coordenadas do jogo que o catálogo e continuam claramente identificadas como dados
+          pessoais.
         </p>
       </Section>
-      <Section title="Evidence and uncertainty">
+      <Section title="Coordenadas compartilhadas">
+        <p>
+          O plano de coordenadas representa unidades do jogo em Leonida, nunca latitude e longitude
+          do mundo real. A transformação calibrada é <code>world x = GTADB x × 2</code> e{' '}
+          <code>world z = −GTADB y × 2</code>. O mapa SVG antigo usa esse valor de world z no eixo
+          vertical. O mapa principal e a reconstrução 3D ficam alinhados com os mesmos registros de
+          fonte.
+        </p>
+        <p>
+          Coordenadas ausentes continuam ausentes: zero é uma coordenada válida e nunca substitui
+          uma posição desconhecida. Coordenadas de lugares equivalentes no mundo real servem só como
+          referência de origem.
+        </p>
+      </Section>
+      <Section title="Evidência e incerteza">
         <dl className="project-definitions">
-          <dt>CONFIRMED</dt>
+          <dt>CONFIRMADO (CONFIRMED)</dt>
           <dd>
-            Official visual identity or existence supported by Rockstar media; this does not confirm
-            a community-mapped position.
+            Identidade visual ou existência comprovada por mídia oficial da Rockstar. Isso não
+            confirma uma posição mapeada pela comunidade.
           </dd>
-          <dt>SUPPORTED</dt>
-          <dd>A community identification with usable source context.</dd>
-          <dt>APPROXIMATE</dt>
-          <dd>Community-estimated position, generalized cartography or reconstructed geometry.</dd>
-          <dt>UNKNOWN</dt>
-          <dd>Unknown names, absent coverage, missing positions or source-flagged uncertainty.</dd>
+          <dt>EMBASADO (SUPPORTED)</dt>
+          <dd>Uma identificação da comunidade com contexto de fonte utilizável.</dd>
+          <dt>APROXIMADO (APPROXIMATE)</dt>
+          <dd>Posição estimada pela comunidade, cartografia generalizada ou geometria reconstruída.</dd>
+          <dt>DESCONHECIDO (UNKNOWN)</dt>
+          <dd>
+            Nomes desconhecidos, áreas sem cobertura, posições ausentes ou incerteza sinalizada pela
+            fonte.
+          </dd>
         </dl>
         <p>
-          Source flags such as unconfirmed, may not exist, cancelled, fictional, demolished and
-          duplicate are retained. They are not interchangeable confidence scores.
+          Marcações da fonte como não confirmado, pode não existir, cancelado, fictício, demolido e
+          duplicado são mantidas. Elas não são notas de confiança intercambiáveis.
         </p>
       </Section>
-      <Section title="Cartography">
+      <Section title="Cartografia">
         <p>
-          The basemap derives from pinned Yanis v16 GTADB raster tiles. Land, water, vegetation,
-          roads and building marks are generalized and recolored. Landmark proximity is never used
-          to invent roads. The coastline halo is decorative, not bathymetry, and land shading is not
-          a validated elevation measurement.
+          O mapa base vem dos tiles raster Yanis v16 do GTADB, em uma revisão fixa. Terra, água,
+          vegetação, ruas e marcas de construções são generalizadas e recoloridas. A proximidade de
+          pontos de referência nunca é usada para inventar ruas. O brilho no litoral é decorativo,
+          não batimetria, e o sombreamento do terreno não é uma medição de altitude validada.
         </p>
         <p>
-          Legend and screenshot columns are excluded. Unmapped margins represent absent source
-          coverage, not evidence of sea. Source annotations may leave residual marks where their
-          colors cannot be separated reliably from road detail.
-        </p>
-      </Section>
-      <Section title="Local data and backups">
-        <p>
-          Favorites, notes, collections, markers and preferences are stored locally in IndexedDB. A
-          successful save depends on browser storage being available. Clearing site data removes
-          those local records; private browsing and storage limits can affect persistence.
-        </p>
-        <p>
-          Use export to save a versioned JSON backup. Import validates its contents and presents a
-          preview before merging with existing data. A backup contains personal notes and markers,
-          so share it deliberately.
+          As colunas de legenda e de capturas de tela ficam de fora. Margens sem mapeamento indicam
+          ausência de cobertura na fonte, não evidência de mar. Anotações da fonte podem deixar
+          marcas residuais onde as cores não podem ser separadas com segurança dos detalhes das
+          ruas.
         </p>
       </Section>
-      <Section title="Optional 3D explorer">
+      <Section title="Dados locais e backups">
         <p>
-          The 3D view loads only when opened. Move with WASD or arrow keys, hold Shift to run, click
-          the scene for mouse look, press E to inspect nearby evidence and M to open its travel map.
-          Escape releases the pointer. Touch users have an analog movement pad, look pad and button
-          controls.
+          Favoritos, notas, coleções, marcadores e preferências ficam salvos localmente no
+          IndexedDB. Para salvar, o armazenamento do navegador precisa estar disponível. Limpar os
+          dados do site apaga esses registros locais, e a navegação privada e os limites de
+          armazenamento podem afetar o que fica salvo.
         </p>
         <p>
-          A deliberate tap on the travel map moves to that coordinate. Panning, pinching and
-          cancelled gestures do not trigger travel. Collision-safe arrival adjustments are
-          disclosed. If WebGL is unavailable, the main atlas and your saved work remain available.
+          Use a exportação para salvar um backup JSON com versão. A importação valida o conteúdo e
+          mostra uma prévia antes de mesclar com os dados existentes. Um backup contém suas notas e
+          marcadores pessoais, então compartilhe com cuidado.
+        </p>
+      </Section>
+      <Section title="Explorador 3D opcional">
+        <p>
+          A visão 3D só carrega quando você abre. Ande com WASD ou as setas, segure Shift para
+          correr, clique na cena para olhar com o mouse, aperte E para inspecionar evidências
+          próximas e M para abrir o mapa de viagem. Esc libera o ponteiro. Em telas de toque, há um
+          controle analógico de movimento, uma área para olhar e botões.
+        </p>
+        <p>
+          Um toque intencional no mapa de viagem leva você até aquela coordenada. Arrastar, fazer
+          pinça e gestos cancelados não acionam a viagem. Ajustes de chegada para evitar colisões
+          são informados. Se o WebGL não estiver disponível, o mapa principal e o seu trabalho salvo
+          continuam acessíveis.
         </p>
       </Section>
     </>
@@ -205,27 +244,43 @@ function Credits() {
   return (
     <>
       <p className="project-lead">
-        Community cartography and official references keep their own sources and rights.
+        A cartografia da comunidade e as referências oficiais mantêm suas próprias fontes e
+        direitos.
       </p>
+      <Section title="Leonida Atlas">
+        <p>
+          O Mapa de Leonida do Mundo Vice é baseado no{' '}
+          <a href={UPSTREAM_REPOSITORY} target="_blank" rel="noreferrer">
+            Leonida Atlas
+          </a>
+          , projeto de código aberto de navanem distribuído sob a licença AGPL-3.0. Esta versão foi
+          modificada (tradução para português do Brasil e identidade do Mundo Vice) e o código-fonte
+          dela está em{' '}
+          <a href={MODIFIED_SOURCE_REPOSITORY} target="_blank" rel="noreferrer">
+            github.com/mendesjf86/gta6-leonida-atlas
+          </a>
+          .
+        </p>
+      </Section>
       <Section title="GTADB / Map GTA">
         <p>
-          GTA VI Landmarks Data and GTA VI Map Tiles are provided by{' '}
+          Os dados GTA VI Landmarks Data e GTA VI Map Tiles são fornecidos por{' '}
           <a href={GTADB_PREFERRED_SOURCE} target="_blank" rel="noreferrer">
             GTADB / Map GTA
           </a>{' '}
-          and its contributors. Community map artwork is Yanis v16, distributed through GTADB.
+          e seus colaboradores. A arte do mapa da comunidade é o Yanis v16, distribuído pelo GTADB.
         </p>
         <p>
-          The pinned revision is <code className="project-revision">{GTADB_REVISION}</code>. The
-          catalogue contains 2,198 records: 2,091 positioned records and 107 without coordinates.
+          A revisão fixada é <code className="project-revision">{GTADB_REVISION}</code>. O catálogo
+          tem 2.198 registros: 2.091 com posição e 107 sem coordenadas.
         </p>
         <p>
           <a href={`${GTADB_SOURCE}/tree/${GTADB_REVISION}/maps`} target="_blank" rel="noreferrer">
-            Pinned map source
+            Fonte do mapa (revisão fixada)
           </a>{' '}
           ·{' '}
           <a href={GTADB_PINNED_DATA_URL} target="_blank" rel="noreferrer">
-            Pinned landmark source
+            Fonte dos pontos de referência (revisão fixada)
           </a>{' '}
           ·{' '}
           <a href={GTADB_LICENSE_URL} rel="license noreferrer" target="_blank">
@@ -234,49 +289,51 @@ function Credits() {
           .
         </p>
         <p>
-          Our presentation recolors and generalizes source pixels, excludes non-geographic legend
-          and screenshot areas, and adds decorative coast emphasis. The water halo is not
-          bathymetry. No source-author endorsement is implied.
+          Nossa apresentação recolore e generaliza os pixels da fonte, remove as áreas de legenda e
+          de capturas de tela que não são geográficas e adiciona um destaque decorativo no litoral.
+          O brilho na água não é batimetria. Isso não implica nenhum endosso dos autores da fonte.
         </p>
         <p>
           <a href={publicPath('assets/gta6-leonida-atlas/ATTRIBUTION.md')}>
-            Complete basemap attribution
+            Atribuição completa do mapa base
           </a>{' '}
-          · <a href={publicPath('assets/gta6-leonida-atlas/metadata.json')}>Generation manifest</a>.
+          · <a href={publicPath('assets/gta6-leonida-atlas/metadata.json')}>Manifesto de geração</a>.
         </p>
       </Section>
-      <Section title="Rockstar Games references">
+      <Section title="Referências da Rockstar Games">
         <p>
-          Official Rockstar trailers, screenshots and webpages inform visual identity and existence.
-          They do not establish the precision of community placement. A source citation does not
-          grant a reuse license.
+          Trailers, capturas de tela e páginas oficiais da Rockstar embasam a identidade visual e a
+          existência dos lugares. Eles não definem a precisão das posições mapeadas pela comunidade.
+          Citar uma fonte não concede licença de reutilização.
         </p>
         <p>
-          Grand Theft Auto, GTA, Rockstar Games, their marks and official media belong to their
-          respective rights holders. This independent project is not affiliated with, endorsed by or
-          sponsored by Rockstar Games or Take-Two Interactive.
+          Grand Theft Auto, GTA, Rockstar Games, suas marcas e mídias oficiais pertencem aos
+          respectivos detentores de direitos. Este projeto independente não é afiliado, endossado
+          nem patrocinado pela Rockstar Games ou pela Take-Two Interactive.
         </p>
         <p>
           <a href="https://www.rockstargames.com/VI" target="_blank" rel="noreferrer">
-            Official Grand Theft Auto VI website
+            Site oficial de Grand Theft Auto VI
           </a>
           .
         </p>
       </Section>
-      <Section title="Visual direction and reconstruction">
+      <Section title="Direção visual e reconstrução">
         <p>
-          An illustrated map informed the original hierarchy, restrained linework and broad color
-          language only; its coastline, labels and geometry were not reused. Procedural geometry and
-          generated material or vegetation studies are reconstruction assets, not extracted GTA VI
-          game assets. Their rights status remains separate from the CC BY 4.0 map data.
+          Um mapa ilustrado inspirou apenas a hierarquia original, o traço contido e a linguagem
+          geral de cores. O litoral, os rótulos e a geometria dele não foram reaproveitados. A
+          geometria procedural e os estudos gerados de materiais e vegetação são recursos de
+          reconstrução, não arquivos extraídos do jogo GTA VI. Os direitos sobre eles são separados
+          dos dados do mapa sob CC BY 4.0.
         </p>
       </Section>
-      <Section title="Built with">
+      <Section title="Feito com">
         <p>
-          React and TypeScript provide the application, Vite builds static files, Leaflet provides
-          the main map interactions, Dexie handles IndexedDB storage, and Three.js renders the
-          optional reconstruction. The travel map retains its native SVG coordinate layer. Interface
-          typography uses Inter and Oswald. Dependencies retain their own licenses.
+          React e TypeScript formam o aplicativo, o Vite gera os arquivos estáticos, o Leaflet cuida
+          das interações do mapa principal, o Dexie gerencia o armazenamento IndexedDB e o Three.js
+          renderiza a reconstrução opcional. O mapa de viagem mantém sua camada nativa de
+          coordenadas em SVG. A tipografia da interface usa Inter e Oswald. As dependências mantêm
+          suas próprias licenças.
         </p>
       </Section>
     </>
@@ -287,40 +344,40 @@ function Contributing() {
   return (
     <>
       <p className="project-lead">
-        Make evidence easier to inspect, without overstating what it proves.
+        Ajude a deixar as evidências mais fáceis de conferir, sem exagerar no que elas provam.
       </p>
-      <Section title="Evidence contributions">
+      <Section title="Contribuições de evidências">
         <p>
-          A useful correction includes the proposed place or viewpoint, a stable public source URL,
-          its publisher, what the source visibly establishes and an evidence level that matches the
-          claim. Proximity, memory or repeated community lore alone are not enough.
+          Uma boa correção inclui o local ou ponto de vista proposto, um link público e estável da
+          fonte, quem publicou, o que a fonte mostra de fato e um nível de evidência compatível com
+          a afirmação. Proximidade, memória ou boatos repetidos pela comunidade não bastam.
         </p>
         <ul>
-          <li>Separate an official appearance reference from community-estimated placement.</li>
-          <li>Keep missing coordinates unknown; never substitute zero.</li>
-          <li>Do not infer roads, boundaries or names from neighboring landmarks.</li>
-          <li>Include attribution and rights information for contributed material.</li>
-          <li>Retain source identifiers and explain changes to imported records.</li>
+          <li>Separe a referência visual oficial da posição estimada pela comunidade.</li>
+          <li>Mantenha coordenadas ausentes como desconhecidas; nunca use zero no lugar.</li>
+          <li>Não deduza ruas, limites ou nomes a partir de pontos de referência vizinhos.</li>
+          <li>Inclua a atribuição e as informações de direitos do material enviado.</li>
+          <li>Mantenha os identificadores da fonte e explique as mudanças em registros importados.</li>
         </ul>
       </Section>
-      <Section title="Code contributions and forks">
+      <Section title="Contribuições de código e forks">
         <p>
-          Use the contribution instructions and issue tracker in the repository or fork you are
-          working with. Include a focused description, expected behavior and relevant verification.
-          Coordinate transforms, evidence labels and the separation between source data and personal
-          edits must remain intact.
+          Siga as instruções de contribuição e use o rastreador de issues do repositório ou fork em
+          que você está trabalhando. Inclua uma descrição objetiva, o comportamento esperado e a
+          verificação relevante. As transformações de coordenadas, os níveis de evidência e a
+          separação entre dados da fonte e edições pessoais precisam continuar intactos.
         </p>
         <p>
-          The public application should build and run as a guest without private credentials. Keep
-          credentials and local configuration out of source changes. Optional integrations must
-          remain explicit and independently configurable.
+          O aplicativo público deve ser gerado e funcionar como visitante, sem credenciais privadas.
+          Deixe credenciais e configurações locais fora das mudanças no código. Integrações
+          opcionais devem continuar explícitas e configuráveis de forma independente.
         </p>
       </Section>
-      <Section title="Personal annotations">
+      <Section title="Anotações pessoais">
         <p>
-          Local notes and markers are a useful place to collect observations before proposing a
-          source correction. Exporting a backup shares those annotations; it does not submit them to
-          the project or publish a change to the source catalogue.
+          Notas e marcadores locais são um bom lugar para juntar observações antes de propor uma
+          correção de fonte. Exportar um backup compartilha essas anotações, mas não envia nada ao
+          projeto nem publica mudanças no catálogo de fontes.
         </p>
       </Section>
     </>
@@ -330,29 +387,24 @@ function Contributing() {
 function Changelog() {
   return (
     <>
-      <p className="project-lead">Leonida Atlas release history, starting with v0.5.0.</p>
+      <p className="project-lead">
+        Histórico de versões do Leonida Atlas, a partir da v0.5.0.
+      </p>
       {LEONIDA_ATLAS_RELEASES.map((release) => (
         <Section key={release.version} title={release.title}>
           <p className="project-release-version">
             {release.version} ·{' '}
-            <time dateTime={release.date}>
-              {new Date(`${release.date}T00:00:00Z`).toLocaleDateString('en-GB', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-                timeZone: 'UTC',
-              })}
-            </time>{' '}
-            · {release.status === 'public' ? 'Released' : 'In preparation'}
+            <time dateTime={release.date}>{formatReleaseDate(release.date)}</time>{' '}
+            · {release.status === 'public' ? 'Publicada' : 'Em preparação'}
           </p>
           <p>{release.summary}</p>
-          <h3>What is included</h3>
+          <h3>O que mudou</h3>
           <ul>
             {release.highlights.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
-          <h3>Verification</h3>
+          <h3>Verificação</h3>
           <ul>
             {release.verification.map((item) => (
               <li key={item}>{item}</li>
@@ -361,8 +413,8 @@ function Changelog() {
         </Section>
       ))}
       <p>
-        Detailed verification scope and browser limitations are recorded in the repository’s release
-        documentation.
+        O escopo detalhado da verificação e as limitações de navegador estão registrados na
+        documentação de versões do repositório.
       </p>
     </>
   );
@@ -372,45 +424,61 @@ function Licenses() {
   return (
     <>
       <p className="project-lead">
-        Project code, community data and third-party references have separate rights.
+        O código do projeto, os dados da comunidade e as referências de terceiros têm direitos
+        separados.
       </p>
-      <Section title="Project code">
+      <Section title="Código do projeto">
         <p>
-          Original GTA6 Leonida Atlas source code in this repository is licensed under the GNU
-          Affero General Public License v3.0 only (<code>AGPL-3.0-only</code>). The repository’s
-          LICENSE contains the full terms. See THIRD_PARTY_LICENSES.md for third-party notices.
+          O código-fonte original do GTA6 Leonida Atlas neste repositório é licenciado sob a GNU
+          Affero General Public License v3.0 only (<code>AGPL-3.0-only</code>). O arquivo LICENSE do
+          repositório traz os termos completos. Veja THIRD_PARTY_LICENSES.md para os avisos de
+          terceiros.
+        </p>
+        <p>
+          Esta é uma versão modificada do{' '}
+          <a href={UPSTREAM_REPOSITORY} target="_blank" rel="noreferrer">
+            Leonida Atlas
+          </a>{' '}
+          de navanem, publicada pelo Mundo Vice sob a mesma licença AGPL-3.0. O código-fonte
+          correspondente desta versão está em{' '}
+          <a href={MODIFIED_SOURCE_REPOSITORY} target="_blank" rel="noreferrer">
+            github.com/mendesjf86/gta6-leonida-atlas
+          </a>
+          .
         </p>
       </Section>
-      <Section title="GTADB-derived data and cartography">
+      <Section title="Dados e cartografia derivados do GTADB">
         <p>
-          GTADB landmark data and Yanis v16 cartographic source material remain under{' '}
+          Os dados de pontos de referência do GTADB e o material cartográfico de origem Yanis v16
+          continuam sob a licença{' '}
           <a href={GTADB_LICENSE_URL} rel="license noreferrer" target="_blank">
             Creative Commons Attribution 4.0 International
           </a>
-          . Retain attribution to GTADB and its contributors, link to the license and identify
-          adaptations.
+          . Mantenha a atribuição ao GTADB e a seus colaboradores, inclua o link para a licença e
+          identifique as adaptações.
         </p>
         <p>
-          Adaptations include coordinate transforms, filtering, rendering windows, generalized and
-          recolored basemap presentation, and derived metadata. The{' '}
-          <a href={projectPath('credits')}>credits page</a> identifies the pinned source and local
-          generation manifest.
+          As adaptações incluem transformações de coordenadas, filtragem, janelas de renderização,
+          apresentação generalizada e recolorida do mapa base e metadados derivados. A{' '}
+          <a href={projectPath('credits')}>página de créditos</a> identifica a fonte fixada e o
+          manifesto local de geração.
         </p>
         <p>
-          Any code copied directly from GTADB remains subject to its original MIT license and
-          copyright notices where applicable.
+          Qualquer código copiado diretamente do GTADB continua sujeito à licença MIT original e aos
+          avisos de copyright, quando aplicável.
         </p>
       </Section>
-      <Section title="Rockstar and other third-party material">
+      <Section title="Material da Rockstar e de outros terceiros">
         <p>
-          Rockstar Games material is cited as reference evidence and remains the property of its
-          rights holders. It is not licensed with this project’s code or the cartographic layer. A
-          citation does not grant reuse rights. Other third-party assets retain their owners’ stated
-          licenses.
+          O material da Rockstar Games é citado como evidência de referência e continua sendo
+          propriedade dos detentores de direitos. Ele não é licenciado junto com o código deste
+          projeto nem com a camada cartográfica. Uma citação não concede direitos de reutilização.
+          Outros recursos de terceiros mantêm as licenças indicadas pelos seus donos.
         </p>
         <p>
-          Procedural and generated reconstruction studies are distinct from the GTADB source data.
-          Consult the repository’s asset notices for their reuse status.
+          Os estudos de reconstrução procedurais e gerados são distintos dos dados de origem do
+          GTADB. Consulte os avisos de recursos do repositório para saber como podem ser
+          reutilizados.
         </p>
       </Section>
     </>
@@ -454,14 +522,14 @@ export default function ProjectPage({ page, onClose }: ProjectPageProps) {
     <main className="project-page" aria-label={title}>
       <header className="project-header">
         <a href={publicPath('')} className="project-brand">
-          LEONIDA <span>ATLAS</span>
+          MAPA DE <span>LEONIDA</span>
         </a>
         <button ref={closeRef} type="button" onClick={onClose}>
-          Back to the atlas
+          Voltar ao mapa
         </button>
       </header>
       <div className="project-layout">
-        <nav className="project-navigation" aria-label="Project pages">
+        <nav className="project-navigation" aria-label="Páginas do projeto">
           {pages.map(([key, label]) => (
             <a
               key={key}
@@ -473,10 +541,13 @@ export default function ProjectPage({ page, onClose }: ProjectPageProps) {
           ))}
         </nav>
         <article className="project-article">
-          <p className="project-eyebrow">GTA6 LEONIDA ATLAS · INDEPENDENT COMMUNITY PROJECT</p>
+          <p className="project-eyebrow">MUNDO VICE · MAPA DA COMUNIDADE DE GTA 6</p>
           <h1>{title}</h1>
           <Content />
-          <footer>Community-estimated geography · Not an official Rockstar map</footer>
+          <footer>
+            Geografia estimada pela comunidade · Não é um mapa oficial da Rockstar · Baseado no
+            Leonida Atlas (AGPL-3.0)
+          </footer>
         </article>
       </div>
     </main>

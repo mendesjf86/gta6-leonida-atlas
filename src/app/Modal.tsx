@@ -25,7 +25,7 @@ export function Modal({
     <dialog ref={ref} className="atlas-dialog" aria-label={title} onCancel={onClose}>
       <header className="panel-heading">
         <h2>{title}</h2>
-        <button className="icon-button" aria-label="Close dialog" onClick={onClose}>
+        <button className="icon-button" aria-label="Fechar janela" onClick={onClose}>
           <X size={20} />
         </button>
       </header>

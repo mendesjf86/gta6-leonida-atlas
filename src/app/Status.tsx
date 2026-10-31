@@ -23,19 +23,19 @@ export function Status() {
       <div>
         <strong>
           {status === 'loading'
-            ? 'Opening local storage…'
+            ? 'Abrindo armazenamento local…'
             : status === 'saving'
-              ? 'Saving to this device…'
+              ? 'Salvando neste aparelho…'
               : status === 'error'
-                ? 'Local storage needs attention'
+                ? 'O armazenamento local precisa de atenção'
                 : offline
-                  ? 'Offline · local data ready'
-                  : 'Local data saved'}
+                  ? 'Offline · dados locais prontos'
+                  : 'Dados salvos neste aparelho'}
         </strong>
-        <small>{error || 'Your places stay on this device'}</small>
+        <small>{error || 'Seus locais ficam só neste aparelho'}</small>
         {status === 'error' && (
           <button className="text-button" onClick={() => void hydrateUserData()}>
-            Retry storage
+            Tentar de novo
           </button>
         )}
       </div>
