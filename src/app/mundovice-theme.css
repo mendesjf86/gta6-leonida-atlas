@@ -270,3 +270,16 @@ textarea {
     font-size: 36px;
   }
 }
+
+/* cluster icon badge: most common kind of place in the group */
+.atlas-cluster-icon {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 0 2px #110e22, 0 3px 6px #05030dcc;
+  z-index: 1;
+}

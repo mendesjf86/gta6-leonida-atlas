@@ -62,9 +62,27 @@ function markerIcon(
   }
   const content = document.createElement('span');
   content.className = cluster ? 'atlas-cluster-face' : 'atlas-pin-face';
+  if (cluster) {
+    // Mundo Vice: show the most common place icon of the group as a small badge.
+    const tally = new Map<string, number>();
+    for (const place of group.places.slice(0, 120)) {
+      const found = iconForPlace(place);
+      if (found) tally.set(found, (tally.get(found) ?? 0) + 1);
+    }
+    let best: string | null = null;
+    let bestCount = 0;
+    for (const [name, count] of tally) if (count > bestCount) [best, bestCount] = [name, count];
+    if (best) {
+      const badge = document.createElement('span');
+      badge.className = 'atlas-cluster-icon';
+      badge.setAttribute('aria-hidden', 'true');
+      badge.style.cssText = placeIconStyle(best as Parameters<typeof placeIconStyle>[0], 20, import.meta.env?.BASE_URL ?? '/');
+      content.append(badge);
+    }
+  }
   content.style.setProperty('--pin-color', layer?.style.color ?? '#2fe6d2');
   content.setAttribute('aria-hidden', 'true');
-  content.textContent = cluster
+  const text = cluster
     ? group.places.length.toLocaleString()
     : group.places[0]?.layerId === 'personal'
       ? group.places[0].tags.includes('star')
@@ -75,6 +93,7 @@ function markerIcon(
       : group.places[0]?.layerId === 'uncertain'
         ? '?'
         : '•';
+  content.prepend(document.createTextNode(text));
   const size = cluster
     ? Math.round(30 + Math.min(16, Math.log10(group.places.length) * 8))
     : group.places[0]?.layerId === 'uncertain'
