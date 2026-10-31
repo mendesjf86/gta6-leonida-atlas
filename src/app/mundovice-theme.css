@@ -1,7 +1,21 @@
-/* Mundo Vice theme: dark Vice City night with sunset accents. Loaded after atlas.css. */
+/* Mundo Vice theme: Vice City night with sunset accents. Loaded after atlas.css. */
+@font-face {
+  font-family: 'Anton';
+  src: url('/assets/mundovice/fonts/anton.woff') format('woff');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Work Sans';
+  src: url('/assets/mundovice/fonts/work-sans.woff') format('woff');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 :root {
   color: #efe9fb;
   background: #110e22;
+  font-family: 'Work Sans', Inter, system-ui, sans-serif;
   --surface: #110e22;
   --surface-raised: #1a1631;
   --accent: #ff3e9a;
@@ -13,19 +27,125 @@
   --mv-sun: #ffc46b;
   --mv-teal: #2fe6d2;
   --mv-cream: #fff1dc;
+  --mv-night: #0e0b1e;
   --mv-gradient: linear-gradient(95deg, #ff3e9a 0%, #ff6a5c 45%, #ff9a3d 75%, #ffc46b 100%);
+  --mv-logo: url('/wp-content/uploads/2026/10/mundovice-logo-mascara.png');
+}
+body,
+button,
+input,
+select,
+textarea {
+  font-family: 'Work Sans', Inter, system-ui, sans-serif;
 }
 
-/* Markers */
-.atlas-pin-face {
-  color: #110e22;
-  border-color: #110e22;
-  box-shadow: 0 2px 8px #05030d99;
+/* ---------- Sidebar header: logo + Anton title + sunset line ---------- */
+.brand-header {
+  position: relative;
+  padding: 26px 22px 24px;
+  background:
+    radial-gradient(90% 120% at 50% 140%, #ff8a3d44 0%, #ff3e9a2a 45%, transparent 75%),
+    linear-gradient(180deg, #110e22 0%, #1b1534 100%);
+}
+.brand-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ff3e9a, #ff8a3d, #ffc46b, #ff8a3d, #ff3e9a);
+}
+.brand-header > div::before {
+  content: '';
+  display: block;
+  width: 92px;
+  aspect-ratio: 286 / 176;
+  margin: 0 0 14px;
+  background: linear-gradient(115deg, #f2508f 0%, #f66f72 25%, #f8945a 50%, #f7bd78 62%, #f8945a 78%, #f2508f 100%);
+  background-size: 220% 100%;
+  -webkit-mask: var(--mv-logo) left center / contain no-repeat;
+  mask: var(--mv-logo) left center / contain no-repeat;
+  animation: mvLogo 10s ease-in-out infinite;
+}
+@keyframes mvLogo {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.brand-header h1 {
+  font: 400 44px/0.95 Anton, Oswald, sans-serif;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--mv-cream);
+  margin: 0 0 10px;
+}
+.brand-header p {
+  font: 700 11px/1.4 'Work Sans', sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mv-pink);
+}
+
+/* ---------- Map surface ---------- */
+.atlas-map-view,
+.atlas-map-canvas {
+  background: var(--mv-night);
+}
+
+/* ---------- Clusters: night bubbles with a sunset ring ---------- */
+.atlas-cluster-face {
+  position: relative;
+  background: #110e22;
+  border: 0;
+  color: var(--mv-cream);
+  font: 400 15px/1 Anton, Oswald, sans-serif;
+  letter-spacing: 0.02em;
+  box-shadow: 0 0 0 2px #110e22, 0 6px 16px #05030dcc;
+}
+.atlas-cluster-face::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  padding: 2px;
+  background: conic-gradient(from 200deg, #ff3e9a, #ff8a3d, #ffc46b, #ff8a3d, #ff3e9a);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+.atlas-map-marker.is-cluster:hover .atlas-cluster-face {
+  background: #2a1740;
+  transform: scale(1.08);
 }
 .atlas-cluster-face {
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+/* ---------- Single pins ---------- */
+.atlas-pin-face {
+  color: #110e22;
+  border: 2px solid #110e22;
+  box-shadow: 0 0 0 2px #fff1dc55, 0 4px 10px #05030dcc;
+  font: 700 14px/1 'Work Sans', sans-serif;
+}
+/* uncertain places: discreet lavender tag instead of loud badges */
+.atlas-map-marker.is-uncertain .atlas-pin-face {
   background: #1a1631;
-  border: 1px solid var(--mv-pink);
-  color: var(--mv-cream);
+  color: #c9a9ef;
+  border: 1.5px solid #c9a9ef;
+  box-shadow: 0 3px 8px #05030dcc;
+  font: 400 12px/1 Anton, sans-serif;
+}
+/* regions: no badge, the name itself is the marker */
+.atlas-map-marker.is-region .atlas-pin-face {
+  width: 10px;
+  height: 10px;
+  margin: auto;
+  border-radius: 50%;
+  border: 2px solid var(--mv-cream);
+  background: var(--mv-pink);
+  color: transparent;
+  box-shadow: 0 0 0 4px #ff3e9a55;
 }
 .atlas-map-marker.is-selected .atlas-pin-face,
 .atlas-map-marker.is-selected .atlas-pin-icon {
@@ -50,8 +170,103 @@
   outline-color: var(--mv-pink);
 }
 
+/* ---------- Labels ---------- */
+.atlas-map-canvas .atlas-place-label {
+  background: #110e22e6;
+  color: var(--mv-cream);
+  border: 1px solid #2b2548;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font: 600 11px/1.4 'Work Sans', sans-serif;
+}
+.atlas-map-canvas .atlas-place-label.is-region {
+  background: #110e22;
+  border: 1px solid #ff3e9a88;
+  border-radius: 999px;
+  padding: 5px 11px 4px;
+  z-index: 2;
+  margin-top: -26px;
+  color: var(--mv-cream);
+  font: 400 17px/1 Anton, Oswald, sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-shadow: none;
+  box-shadow: 0 6px 16px #05030dcc, 0 0 18px #ff3e9a33;
+  max-width: none;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* ---------- Top bar buttons: site pills ---------- */
+.map-topbar .button,
+.map-topbar .icon-button {
+  background: #110e22e8;
+  border: 1px solid #2b2548;
+  border-radius: 999px;
+  color: var(--mv-cream);
+  font-weight: 700;
+  box-shadow: 0 6px 18px #05030d99;
+  backdrop-filter: blur(6px);
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+.map-topbar .button:hover,
+.map-topbar .icon-button:hover {
+  border-color: var(--mv-pink);
+  background: #1a1631;
+  transform: translateY(-1px);
+}
+.map-actions .button:first-child {
+  background: var(--mv-pink);
+  border-color: var(--mv-pink);
+  color: #fff;
+}
+.map-actions .button:first-child:hover {
+  background: #ff5aa9;
+}
+
+/* ---------- Bottom captions ---------- */
+.atlas-map-caption,
+.map-coverage {
+  background: #110e22e6;
+  border: 1px solid #2b2548;
+  border-radius: 999px;
+  color: var(--mv-cream);
+  font-weight: 700;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .atlas-pin-icon {
+  .atlas-pin-icon,
+  .atlas-cluster-face,
+  .brand-header > div::before {
     transition: none;
+    animation: none;
+  }
+}
+
+/* ---------- Zoom controls ---------- */
+.atlas-map-navigation {
+  background: #110e22e8;
+  border: 1px solid #2b2548;
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px #05030d99;
+}
+.atlas-map-navigation button {
+  background: transparent;
+  color: var(--mv-cream);
+}
+.atlas-map-navigation button:hover {
+  background: #ff3e9a;
+  color: #fff;
+}
+
+@media (max-width: 599px) {
+  .atlas-map-canvas .atlas-place-label.is-region {
+    font-size: 12px;
+    padding: 4px 9px 3px;
+    margin-top: -20px;
+  }
+  .brand-header h1 {
+    font-size: 36px;
   }
 }

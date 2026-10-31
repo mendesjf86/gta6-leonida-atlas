@@ -75,10 +75,14 @@ function markerIcon(
       : group.places[0]?.layerId === 'uncertain'
         ? '?'
         : '•';
-  const size = cluster ? 38 : Math.max(24, (layer?.style.radius ?? 6) * 2 + 10);
+  const size = cluster
+    ? Math.round(30 + Math.min(16, Math.log10(group.places.length) * 8))
+    : group.places[0]?.layerId === 'uncertain'
+      ? 22
+      : Math.max(24, (layer?.style.radius ?? 6) * 2 + 10);
   return L.divIcon({
     html: content,
-    className: `atlas-map-marker ${cluster ? 'is-cluster' : ''} ${selected ? 'is-selected' : ''} ${group.places[0]?.layerId === 'regions' ? 'is-region' : ''}`,
+    className: `atlas-map-marker ${cluster ? 'is-cluster' : ''} ${selected ? 'is-selected' : ''} ${!cluster && group.places[0]?.layerId === 'regions' ? 'is-region' : ''} ${!cluster && group.places[0]?.layerId === 'uncertain' ? 'is-uncertain' : ''}`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
   });
@@ -132,7 +136,7 @@ export default function MapView(props: MapViewProps) {
       activeMap.fitBounds(leafletBounds(INITIAL_BOUNDS), { padding: [24, 24], animate: false });
       const base = import.meta.env.BASE_URL ?? '/';
       const overlay = L.imageOverlay(
-        `${base.endsWith('/') ? base : `${base}/`}assets/gta6-leonida-atlas/basemap.svg`,
+        `${base.endsWith('/') ? base : `${base}/`}assets/mundovice/basemap-mundovice.webp`,
         leafletBounds(BASEMAP_BOUNDS),
         {
           interactive: false,
@@ -346,9 +350,9 @@ export default function MapView(props: MapViewProps) {
           label.textContent = place.title;
           marker.bindTooltip(label, {
             permanent: true,
-            direction: 'right',
-            offset: [10, 0],
-            className: `atlas-place-label ${selected ? 'is-selected' : ''}`,
+            direction: place.layerId === 'regions' ? 'center' : 'right',
+            offset: place.layerId === 'regions' ? [0, 0] : [10, 0],
+            className: `atlas-place-label ${selected ? 'is-selected' : ''} ${place.layerId === 'regions' ? 'is-region' : ''}`,
           });
           labelCount++;
         }

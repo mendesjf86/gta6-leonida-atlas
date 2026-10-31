@@ -68,7 +68,7 @@ export function clusterPlaces(places: readonly Place[], options: ClusterOptions)
   if (!options.enabled && positioned.length <= maxMarkers) {
     return positioned.map((place) => ({ id: place.id, position: place.position, places: [place] }));
   }
-  let cellSize = 60 / Math.pow(2, Number.isFinite(options.zoom) ? options.zoom : 0);
+  let cellSize = 84 / Math.pow(2, Number.isFinite(options.zoom) ? options.zoom : 0);
   // Keep the small reference-region set legible while reserving a bounded part of the DOM budget.
   const referenceIds = new Set(
     positioned

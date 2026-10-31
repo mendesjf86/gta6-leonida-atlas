@@ -99,12 +99,23 @@ export function catalogueFromSnapshot(input: unknown): Place[] {
       candidate.editedAt,
     ];
   }
+  // Mundo Vice: region labels sit on the centroid of the community landmarks of each area (GTADB coordinates).
+  const regionLabelAnchors: Record<string, { x: number; y: number }> = {
+    'vice-city': { x: -977, y: -149 },
+    'port-gellhorn': { x: -6595, y: 3649 },
+    ambrosia: { x: -2789, y: 3951 },
+    grassrivers: { x: -3719, y: -4063 },
+    'leonida-keys': { x: -2539, y: -5930 },
+    'mount-kalaga-national-park': { x: -3890, y: 7280 },
+  };
   const regions: Place[] = getLocalStreetPlaces().items.map((region) => ({
     id: `region:${region.slug}`,
     title: region.name,
     description: region.description ?? '',
     category: 'region',
-    position: region.position ? { x: region.position.x, y: region.position.y } : null,
+    position:
+      regionLabelAnchors[region.slug] ??
+      (region.position ? { x: region.position.x, y: region.position.y } : null),
     layerId: 'regions',
     tags: [...region.labels],
     region: region.name,
